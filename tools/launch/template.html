@@ -1,0 +1,462 @@
+<title>PEPES FAMILY Launch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column of numbered launch steps (they really are a sequence), then a manage panel. */
+:root {
+  --bg: #f3f6ef;
+  --panel: #ffffff;
+  --ink: #1b2a17;
+  --muted: #5d6b57;
+  --line: #d6dfcf;
+  --frog: #4f8a32;
+  --frog-ink: #ffffff;
+  --lip: #b0463c;
+  --ok: #2f7d32;
+  --warn: #9a6a00;
+  --bad: #b3261e;
+  --soft: #e8efe2;
+  --display: "Pixelify Sans", "Courier New", monospace;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11170f; --panel: #19221a; --ink: #e4eddc; --muted: #9aab92; --line: #2c3a2a; --frog: #7cc252;
+    --frog-ink: #0f170c; --lip: #e07a6e; --ok: #7cc252; --warn: #e2b54a; --bad: #f08a80; --soft: #212d20;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11170f; --panel: #19221a; --ink: #e4eddc; --muted: #9aab92; --line: #2c3a2a; --frog: #7cc252;
+  --frog-ink: #0f170c; --lip: #e07a6e; --ok: #7cc252; --warn: #e2b54a; --bad: #f08a80; --soft: #212d20;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+main { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+h1 { font: 700 34px/1.1 var(--display); margin: 0; letter-spacing: .02em; text-wrap: balance; }
+h1 span { color: var(--frog); }
+h2 { font: 600 17px/1.3 var(--body); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.sub { color: var(--muted); max-width: 62ch; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); margin: 0; gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.facts div { background: var(--panel); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.facts dt { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: flex;
+  flex-direction: column; gap: 12px; min-width: 0; }
+.step[data-state="done"] { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+.step[data-state="locked"] { opacity: .55; }
+.step-head { display: flex; align-items: center; gap: 10px; }
+.num { flex: none; width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; font: 700 15px var(--display);
+  background: var(--soft); color: var(--ink); }
+.step[data-state="done"] .num { background: var(--ok); color: var(--frog-ink); }
+.pill { margin-left: auto; font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--soft); color: var(--muted); white-space: nowrap; }
+.pill.ok { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+.pill.warn { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+.pill.bad { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button { font: 600 14px var(--body); border-radius: 7px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);
+  padding: 9px 14px; cursor: pointer; }
+button.go { background: var(--frog); color: var(--frog-ink); border-color: var(--frog); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--frog); outline-offset: 2px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); min-width: 0; }
+.row label { flex: 1 1 220px; }
+input { font: 14px var(--mono); padding: 8px 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg);
+  color: var(--ink); width: 100%; min-width: 0; }
+.mono { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.secret { font: 500 14px var(--mono); background: var(--soft); border: 1px dashed var(--lip); border-radius: 8px; padding: 10px 12px;
+  overflow-wrap: anywhere; user-select: all; }
+.note { font-size: 13px; color: var(--muted); }
+.warnbox { font-size: 13px; color: var(--warn); }
+.contracts { display: grid; gap: 6px; }
+.contracts div { display: grid; grid-template-columns: 150px 1fr; gap: 8px; align-items: baseline; min-width: 0; }
+.contracts span:first-child { color: var(--muted); font-size: 13px; }
+@media (max-width: 480px) { .contracts div { grid-template-columns: 1fr; gap: 0; } h1 { font-size: 28px; } }
+#log { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8px; padding: 10px 12px; max-height: 220px; overflow: auto;
+  white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+a { color: var(--frog); }
+pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8px; padding: 10px 12px; overflow-x: auto; margin: 0; }
+@media (prefers-reduced-motion: no-preference) { button { transition: filter .15s; } button:hover:not(:disabled) { filter: brightness(1.06); } }
+</style>
+
+<main>
+  <header>
+    <h1>PEPES <span>FAMILY</span> launch</h1>
+    <p class="sub">Deploy the collection on Robinhood Chain from your wallet: four contracts, then open the mint. Every frog's
+      picture and traits live in these contracts, so nothing else needs hosting.</p>
+  </header>
+
+  <dl class="facts">
+    <div><dt>Supply</dt><dd>3,333 frogs</dd></div>
+    <div><dt>Ticker</dt><dd>PEPES</dd></div>
+    <div><dt>Royalty</dt><dd>5%, enforced</dd></div>
+    <div><dt>Wallet limit</dt><dd>3 per wallet</dd></div>
+    <div><dt>Owner and payouts</dt><dd class="mono" id="ownerShort"></dd></div>
+  </dl>
+
+  <section class="step" id="s1">
+    <div class="step-head"><span class="num">1</span><h2>Connect the owner wallet</h2><span class="pill" id="s1pill">Not connected</span></div>
+    <p class="note">Use the wallet that holds <span class="mono" id="ownerFull"></span>. It deploys and owns the collection, so it can edit it
+      in OpenSea Studio later.</p>
+    <div class="row" id="walletButtons"><button class="go" id="connect">Connect wallet</button></div>
+    <p class="note" id="s1msg"></p>
+  </section>
+
+  <section class="step" id="s2" data-state="locked">
+    <div class="step-head"><span class="num">2</span><h2>Switch to Robinhood Chain</h2><span class="pill" id="s2pill">Waiting</span></div>
+    <p class="note">Chain 4663. The wallet adds it if it doesn't know it yet. Keep a little ETH on it for gas.</p>
+    <div class="row"><button id="switch" disabled>Switch network</button><span class="note" id="balance"></span></div>
+  </section>
+
+  <section class="step" id="s3" data-state="locked">
+    <div class="step-head"><span class="num">3</span><h2>Save the reveal secret</h2><span class="pill" id="s3pill">Not saved</span></div>
+    <p class="note">The frogs mint sealed. After the mint you reveal them with this number. Only its fingerprint goes on chain now.
+      <strong>Without it the frogs can never be revealed.</strong> Copy it into your password manager.</p>
+    <div class="secret" id="secret"></div>
+    <div class="row"><button id="copySecret">Copy secret</button><span class="note" id="copyMsg"></span></div>
+    <label for="secretCheck">Paste it back to confirm you saved it
+      <input id="secretCheck" autocomplete="off" spellcheck="false" placeholder="the number above"></label>
+  </section>
+
+  <section class="step" id="s4" data-state="locked">
+    <div class="step-head"><span class="num">4</span><h2>Deploy the contracts</h2><span class="pill" id="s4pill">0 of 4</span></div>
+    <div class="row">
+      <label for="price">Mint price (ETH a frog)<input id="price" value="0.0004" inputmode="decimal"></label>
+    </div>
+    <p class="note">0.0004 ETH is about $1 with ETH near $2,450. You can change it any time after deploying.
+      Your wallet asks you to approve four transactions, one after another.</p>
+    <div class="contracts" id="contracts"></div>
+    <div class="row"><button class="go" id="deploy" disabled>Deploy</button></div>
+  </section>
+
+  <section class="step" id="s5" data-state="locked">
+    <div class="step-head"><span class="num">5</span><h2>Links and opening the mint</h2><span class="pill" id="s5pill">Optional</span></div>
+    <p class="note">These can be changed any time, before or after the sell-out.</p>
+    <div class="row">
+      <label for="website">Website<input id="website" placeholder="https://pepesfamily.xyz"></label>
+      <label for="xlink">X link<input id="xlink" placeholder="https://x.com/pepesfamily"></label>
+    </div>
+    <div class="row"><button id="saveLinks" disabled>Save links</button></div>
+    <div class="row">
+      <button class="go" id="openMint" disabled>Open the mint</button>
+      <button id="closeMint" disabled>Close the mint</button>
+      <span class="note" id="mintState"></span>
+    </div>
+    <div class="row">
+      <label for="newPrice">Change the price (ETH)<input id="newPrice" placeholder="0.0004" inputmode="decimal"></label>
+    </div>
+    <div class="row"><button id="setPrice" disabled>Set price</button></div>
+  </section>
+
+  <section class="step" id="s6" data-state="locked">
+    <div class="step-head"><span class="num">6</span><h2>Reveal, after the mint</h2><span class="pill" id="s6pill">Sealed</span></div>
+    <p class="note">Announce the time first. This closes the mint for good, publishes the secret, then seals the seed: approve
+      the last transaction quickly, it has about 26 seconds.</p>
+    <label for="revealSecret">Reveal secret<input id="revealSecret" autocomplete="off" spellcheck="false"></label>
+    <div class="row"><button id="reveal" disabled>Reveal the frogs</button></div>
+  </section>
+
+  <section class="step" id="s7">
+    <div class="step-head"><h2>Activity</h2></div>
+    <pre id="log">Ready.</pre>
+    <pre class="json" id="record" hidden></pre>
+    <div class="row"><button id="copyRecord" hidden>Copy contract addresses</button><button id="forget">Start over on this browser</button></div>
+  </section>
+</main>
+
+<script src="__ETHERS_SRC__"></script>
+<script>
+"use strict";
+const OWNER = "0x3c8A4d94B3219F6633F2cC94094f4765b30c691C";
+const VALIDATOR = "0xA000027A9B2802E1ddf7000061001e5c005A0000"; // OpenSea's royalty-enforcement registry
+const CHAIN = { id: 4663, hex: "0x1237", name: "Robinhood Chain", rpc: "https://rpc.mainnet.chain.robinhood.com",
+  explorer: "https://explorer.mainnet.chain.robinhood.com" };
+const LOCAL_TEST = location.hash === "#localtest"; // a local Anvil chain (31337), for testing this page only
+const CODE = __BYTECODES__;
+const PEPES_ABI = [
+  "function owner() view returns (address)", "function saleOpen() view returns (bool)", "function price() view returns (uint256)",
+  "function totalMinted() view returns (uint256)", "function revealStatus() view returns (uint8)", "function seed() view returns (uint256)",
+  "function website() view returns (string)", "function xLink() view returns (string)",
+  "function setLinks(string,string)", "function setSaleOpen(bool)", "function setPrice(uint256)", "function reveal(uint256)",
+  "function seal() returns (uint256)", "function seedCommit() view returns (bytes32)",
+];
+const PARTS = [
+  { key: "specs", label: "Trait sets (FrogCraftSpecs)" },
+  { key: "data", label: "Art data (FrogCraftArtData)" },
+  { key: "art", label: "Art (FrogCraftArt)" },
+  { key: "pepes", label: "PEPES FAMILY" },
+];
+const $ = (id) => document.getElementById(id);
+const E = window.ethers;
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem("pepes-launch") || "{}"); } catch { return {}; } },
+  set(v) { try { localStorage.setItem("pepes-launch", JSON.stringify(v)); } catch {} },
+};
+let saved = store.get();
+const st = { eip1193: null, provider: null, signer: null, account: null, chainId: null, busy: false,
+  addr: saved.addr || {}, secret: saved.secret || null, secretOk: !!saved.secretOk };
+const persist = () => store.set({ addr: st.addr, secret: st.secret, secretOk: st.secretOk });
+const short = (a) => a.slice(0, 6) + "…" + a.slice(-4);
+const log = (m) => { const l = $("log"); l.textContent = (l.textContent === "Ready." ? "" : l.textContent + "\n") + m; l.scrollTop = l.scrollHeight; };
+const explorerTx = (h) => LOCAL_TEST ? h : `${CHAIN.explorer}/tx/${h}`;
+function errText(e) {
+  if (e?.code === 4001 || e?.code === "ACTION_REJECTED" || e?.info?.error?.code === 4001) return "You rejected it in the wallet.";
+  return e?.shortMessage || e?.reason || e?.info?.error?.message || e?.message || String(e);
+}
+function setPill(id, text, kind) { const p = $(id); p.textContent = text; p.className = "pill" + (kind ? " " + kind : ""); }
+function setStep(id, state) { if (state) $(id).dataset.state = state; else delete $(id).dataset.state; }
+
+$("ownerShort").textContent = short(OWNER);
+$("ownerFull").textContent = OWNER;
+
+// ---------------------------------------------------------------- the secret
+if (!st.secret) {
+  const b = new Uint8Array(32); crypto.getRandomValues(b);
+  st.secret = BigInt("0x" + Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("")).toString();
+  persist();
+}
+$("secret").textContent = st.secret;
+$("revealSecret").value = st.secret;
+if (st.secretOk) $("secretCheck").value = st.secret;
+$("copySecret").addEventListener("click", () => {
+  navigator.clipboard.writeText(st.secret).then(() => { $("copyMsg").textContent = "Copied. Save it somewhere safe."; },
+    () => { const r = document.createRange(); r.selectNodeContents($("secret")); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      $("copyMsg").textContent = "Selected: copy it with your keyboard."; });
+});
+$("secretCheck").addEventListener("input", () => { st.secretOk = $("secretCheck").value.trim() === st.secret; persist(); render(); });
+const commit = () => E.keccak256(E.AbiCoder.defaultAbiCoder().encode(["uint256"], [BigInt(st.secret)]));
+
+// ---------------------------------------------------------------- wallets (EIP-6963, then window.ethereum)
+const found = new Map();
+window.addEventListener("eip6963:announceProvider", (e) => { found.set(e.detail.info.uuid, e.detail); renderWallets(); });
+window.dispatchEvent(new Event("eip6963:requestProvider"));
+function renderWallets() {
+  const box = $("walletButtons");
+  if (found.size < 2) return;
+  box.innerHTML = "";
+  for (const d of found.values()) {
+    const b = document.createElement("button");
+    b.className = "go"; b.textContent = "Connect " + d.info.name;
+    b.addEventListener("click", () => connect(d.provider));
+    box.appendChild(b);
+  }
+}
+$("connect").addEventListener("click", () => {
+  const p = found.size ? [...found.values()][0].provider : window.ethereum;
+  if (!p) {
+    $("s1msg").textContent = "No wallet found in this browser. Install or unlock a wallet extension (MetaMask, Rabby, Coinbase Wallet), " +
+      "then reload. On a phone, open this page in your wallet app's browser.";
+    return;
+  }
+  connect(p);
+});
+async function connect(p) {
+  try {
+    st.eip1193 = p;
+    st.provider = new E.BrowserProvider(p, "any");
+    const accs = await p.request({ method: "eth_requestAccounts" });
+    st.account = E.getAddress(accs[0]);
+    st.signer = await st.provider.getSigner(st.account);
+    st.chainId = Number(await p.request({ method: "eth_chainId" }));
+    if (!p.__pepesHooked) {
+      p.__pepesHooked = true;
+      p.on?.("accountsChanged", (a) => { st.account = a[0] ? E.getAddress(a[0]) : null; refreshSigner(); });
+      p.on?.("chainChanged", (c) => { st.chainId = Number(c); refreshSigner(); });
+    }
+    log("Connected " + st.account + " on chain " + st.chainId + ".");
+    await refresh();
+  } catch (e) { $("s1msg").textContent = errText(e); }
+}
+async function refreshSigner() {
+  if (!st.eip1193) return;
+  st.provider = new E.BrowserProvider(st.eip1193, "any");
+  st.signer = st.account ? await st.provider.getSigner(st.account) : null;
+  await refresh();
+}
+const isOwner = () => st.account && st.account.toLowerCase() === OWNER.toLowerCase();
+const onChain = () => st.chainId === CHAIN.id || (LOCAL_TEST && st.chainId === 31337);
+
+$("switch").addEventListener("click", async () => {
+  try {
+    await st.eip1193.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN.hex }] });
+  } catch (e) {
+    if (e?.code === 4902 || e?.data?.originalError?.code === 4902) {
+      try {
+        await st.eip1193.request({ method: "wallet_addEthereumChain", params: [{ chainId: CHAIN.hex, chainName: CHAIN.name,
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 }, rpcUrls: [CHAIN.rpc], blockExplorerUrls: [CHAIN.explorer] }] });
+      } catch (e2) { log("Network: " + errText(e2)); }
+    } else log("Network: " + errText(e));
+  }
+});
+
+// ---------------------------------------------------------------- deploying
+async function hasCode(a) { try { return a && (await st.provider.getCode(a)) !== "0x"; } catch { return false; } }
+async function deployPart(key, args) {
+  if (await hasCode(st.addr[key])) return st.addr[key];
+  const label = (PARTS.find((p) => p.key === key) || { label: "Test validator" }).label;
+  log(`Deploying ${label}: approve it in your wallet...`);
+  const data = CODE[key] + (args ? args.slice(2) : "");
+  const tx = await st.signer.sendTransaction({ data });
+  log(`  sent ${explorerTx(tx.hash)}`);
+  const rc = await tx.wait();
+  if (!rc || rc.status !== 1 || !rc.contractAddress) throw new Error(label + " failed to deploy.");
+  st.addr[key] = rc.contractAddress; persist();
+  log(`  ${label} at ${rc.contractAddress}`);
+  render();
+  return rc.contractAddress;
+}
+$("deploy").addEventListener("click", async () => {
+  if (st.busy) return;
+  let priceWei;
+  try { priceWei = E.parseEther($("price").value.trim() || "0"); } catch { log("The price isn't a number of ETH (like 0.0004)."); return; }
+  st.busy = true; render();
+  try {
+    const enc = E.AbiCoder.defaultAbiCoder();
+    const specs = await deployPart("specs");
+    const data = await deployPart("data");
+    const art = await deployPart("art", enc.encode(["address", "address"], [specs, data]));
+    let validator = VALIDATOR;
+    if (LOCAL_TEST && !(await hasCode(VALIDATOR))) validator = await deployPart("validator");
+    await deployPart("pepes", enc.encode(["address", "address", "uint256", "bytes32", "address", "address"],
+      [OWNER, OWNER, priceWei, commit(), validator, art]));
+    log("PEPES FAMILY is deployed. Next: links, then open the mint.");
+  } catch (e) { log("Stopped: " + errText(e) + " Press Deploy again to continue where it stopped."); }
+  st.busy = false; await refresh();
+});
+
+// ---------------------------------------------------------------- managing
+const pepes = () => new E.Contract(st.addr.pepes, PEPES_ABI, st.signer);
+async function send(what, fn) {
+  if (st.busy) return;
+  st.busy = true; render();
+  try {
+    log(what + ": approve it in your wallet...");
+    const tx = await fn();
+    log(`  sent ${explorerTx(tx.hash)}`);
+    await tx.wait();
+    log("  done.");
+  } catch (e) { log(what + " failed: " + errText(e)); }
+  st.busy = false; await refresh();
+}
+$("saveLinks").addEventListener("click", () => {
+  const w = $("website").value.trim(), x = $("xlink").value.trim();
+  if (/["\\]/.test(w + x)) { log("Links can't contain quotes or backslashes."); return; }
+  send("Saving the links", () => pepes().setLinks(w, x));
+});
+$("openMint").addEventListener("click", () => send("Opening the mint", () => pepes().setSaleOpen(true)));
+$("closeMint").addEventListener("click", () => send("Closing the mint", () => pepes().setSaleOpen(false)));
+$("setPrice").addEventListener("click", () => {
+  let wei; try { wei = E.parseEther($("newPrice").value.trim()); } catch { log("The price isn't a number of ETH."); return; }
+  send("Setting the price to " + E.formatEther(wei) + " ETH", () => pepes().setPrice(wei));
+});
+$("reveal").addEventListener("click", async () => {
+  if (st.busy) return;
+  const secret = $("revealSecret").value.trim();
+  if (!/^\d+$/.test(secret)) { log("The reveal secret is the long number from step 3."); return; }
+  const c = pepes();
+  try {
+    if (E.keccak256(E.AbiCoder.defaultAbiCoder().encode(["uint256"], [BigInt(secret)])) !== await c.seedCommit()) {
+      log("That isn't the secret this collection was deployed with."); return;
+    }
+  } catch (e) { log(errText(e)); return; }
+  st.busy = true; render();
+  try {
+    if (await c.saleOpen()) { log("Closing the mint: approve..."); await (await c.setSaleOpen(false)).wait(); }
+    if (Number(await c.revealStatus()) === 0) { log("Publishing the secret: approve..."); await (await c.reveal(BigInt(secret))).wait(); }
+    log("Waiting for the next block, then sealing: approve the seal quickly.");
+    for (let i = 0; i < 600; i++) {
+      const s = Number(await c.revealStatus());
+      if (s === 4) { log("Revealed. Every frog's look is now on chain."); break; }
+      if (s === 3 || s === 5) { log("The sealing window passed. The owner can call moveEntropyOn() on the contract, then seal again."); break; }
+      if (s === 2) { try { await (await c.seal()).wait(); } catch (e) { log("Seal: " + errText(e)); } continue; }
+      await new Promise((r) => setTimeout(r, 400));
+    }
+  } catch (e) { log("Reveal stopped: " + errText(e)); }
+  st.busy = false; await refresh();
+});
+$("copyRecord").addEventListener("click", () => {
+  navigator.clipboard.writeText($("record").textContent).then(() => log("Addresses copied."), () => log("Select the addresses above and copy them."));
+});
+$("forget").addEventListener("click", () => {
+  if ($("forget").dataset.armed !== "1") { $("forget").dataset.armed = "1"; $("forget").textContent = "Press again: this forgets the addresses and the secret on this browser"; return; }
+  store.set({}); location.reload();
+});
+
+// ---------------------------------------------------------------- state
+let chainState = {};
+async function refresh() {
+  chainState = {};
+  if (st.provider && st.account) {
+    try { chainState.balance = await st.provider.getBalance(st.account); } catch {}
+    if (onChain() && await hasCode(st.addr.pepes)) {
+      try {
+        const c = new E.Contract(st.addr.pepes, PEPES_ABI, st.provider);
+        [chainState.open, chainState.minted, chainState.status, chainState.price, chainState.website, chainState.x] = await Promise.all(
+          [c.saleOpen(), c.totalMinted(), c.revealStatus(), c.price(), c.website(), c.xLink()]);
+        chainState.deployed = true;
+      } catch {}
+    }
+  }
+  render();
+}
+function render() {
+  const connected = !!st.account;
+  setStep("s1", connected && isOwner() ? "done" : null);
+  if (!connected) setPill("s1pill", "Not connected");
+  else if (!isOwner()) { setPill("s1pill", "Wrong wallet", "bad"); $("s1msg").textContent = `Connected ${st.account}. Switch your wallet to ${OWNER}.`; }
+  else { setPill("s1pill", "Owner connected", "ok"); $("s1msg").textContent = "Connected " + st.account + "."; }
+
+  const ready1 = connected && isOwner();
+  setStep("s2", !ready1 ? "locked" : onChain() ? "done" : null);
+  $("switch").disabled = !ready1 || onChain();
+  setPill("s2pill", !ready1 ? "Waiting" : onChain() ? (st.chainId === 31337 ? "Local test chain" : "Robinhood Chain") : "Wrong network", onChain() ? "ok" : ready1 ? "warn" : "");
+  $("balance").textContent = chainState.balance !== undefined && onChain() ? "Balance: " + Number(E.formatEther(chainState.balance)).toFixed(5) + " ETH" : "";
+
+  const ready2 = ready1 && onChain();
+  setStep("s3", !ready2 ? "locked" : st.secretOk ? "done" : null);
+  setPill("s3pill", st.secretOk ? "Saved" : "Not saved", st.secretOk ? "ok" : "");
+
+  const done = PARTS.filter((p) => st.addr[p.key]).length;
+  const deployed = !!chainState.deployed;
+  setStep("s4", !(ready2 && st.secretOk) && !deployed ? "locked" : deployed ? "done" : null);
+  setPill("s4pill", `${done} of 4`, deployed ? "ok" : done ? "warn" : "");
+  $("contracts").innerHTML = PARTS.map((p) => `<div><span>${p.label}</span><span class="mono">${st.addr[p.key] || "not yet"}</span></div>`).join("");
+  $("deploy").disabled = !(ready2 && st.secretOk) || st.busy || deployed;
+  $("deploy").textContent = deployed ? "Deployed" : done ? "Continue deploying" : "Deploy";
+  $("price").disabled = done > 0;
+
+  const can = ready2 && deployed && !st.busy;
+  setStep("s5", deployed ? null : "locked");
+  for (const id of ["saveLinks", "setPrice"]) $(id).disabled = !can;
+  $("openMint").disabled = !can || chainState.open || Number(chainState.status) !== 0;
+  $("closeMint").disabled = !can || !chainState.open;
+  if (deployed) {
+    setPill("s5pill", chainState.open ? "Mint open" : "Mint closed", chainState.open ? "ok" : "");
+    $("mintState").textContent = `${chainState.minted} of 3,333 minted, ${E.formatEther(chainState.price)} ETH each`;
+    if (!$("website").value && chainState.website) $("website").value = chainState.website;
+    if (!$("xlink").value && chainState.x) $("xlink").value = chainState.x;
+  }
+  const s = Number(chainState.status ?? 0);
+  setStep("s6", deployed ? (s === 4 ? "done" : null) : "locked");
+  setPill("s6pill", ["Sealed", "Revealing", "Sealable", "Window passed", "Revealed", "Stuck"][s] || "Sealed", s === 4 ? "ok" : s ? "warn" : "");
+  $("reveal").disabled = !can || s === 4 || !(chainState.minted > 0n);
+
+  const rec = PARTS.some((p) => st.addr[p.key]);
+  $("record").hidden = !rec; $("copyRecord").hidden = !rec;
+  if (rec) $("record").textContent = JSON.stringify({ chainId: st.chainId, pepesFamily: st.addr.pepes, art: st.addr.art,
+    artData: st.addr.data, specs: st.addr.specs, owner: OWNER, treasury: OWNER, validator: VALIDATOR }, null, 2);
+}
+render();
+setInterval(() => { if (st.account && !st.busy) refresh(); }, 15000); // (mints by others show up)
+if (!E) log("The wallet library didn't load. Check your connection and reload the page.");
+</script>

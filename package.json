@@ -1,0 +1,10 @@
+{
+  "name": "pepes-family-onchain",
+  "private": true,
+  "type": "module",
+  "description": "PEPES FAMILY: 3,333 fully on-chain frogs on Robinhood Chain",
+  "dependencies": {
+    "@openzeppelin/contracts": "5.1.0",
+    "ethers": "6.13.4"
+  }
+}
