@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploys PEPES FAMILY on Robinhood Chain (chain 4663): ImdPepeSpecs (the 3,333 trait sets), ImdPepeParts (the text
+# Deploys Pepes Family on Robinhood Chain (chain 4663): ImdPepeSpecs (the 3,333 trait sets), ImdPepeParts (the text
 # the pictures are made of), ImdPepeData0-6 (IMD's Pepe frames), ImdPepeArt (draws every picture), then PepesFamily
 # (the NFT), all fully on chain.
 #
@@ -10,7 +10,7 @@
 # commands without --browser. Needs Foundry 1.5 or later (`foundryup`) for --browser.
 #
 # Env (all optional): ACCOUNT (keystore name, default pepes-owner), RPC_URL (default Robinhood's public RPC),
-# PRICE_WEI (default 400000000000000 = 0.0004 ETH, about $1 at ETH $2,450), WEBSITE and X_LINK (set now, or later with
+# PRICE_WEI (default 413000000000000 = 0.000413 ETH, $1 at ETH $2,424 on 2026-10-18), WEBSITE and X_LINK (set now, or later with
 # setLinks), VALIDATOR (OpenSea's royalty-enforcement registry), OPEN_SALE=1 (open the mint at once).
 #
 # Deploy from the OWNER wallet itself (0x3c8A...691C): OpenSea Studio lets only the collection's owner() edit it,
@@ -22,7 +22,7 @@ cd "$(dirname "$0")/.."
 OWNER=0x3c8A4d94B3219F6633F2cC94094f4765b30c691C
 TREASURY=${TREASURY:-$OWNER}
 VALIDATOR=${VALIDATOR:-0xA000027A9B2802E1ddf7000061001e5c005A0000} # OpenSea's StrictAuthorizedTransferSecurityRegistry
-PRICE_WEI=${PRICE_WEI:-400000000000000}
+PRICE_WEI=${PRICE_WEI:-413000000000000}
 RPC_URL=${RPC_URL:-https://rpc.mainnet.chain.robinhood.com}
 ACCOUNT=${ACCOUNT:-pepes-owner}
 SECRET_FILE=${SECRET_FILE:-$HOME/pepes-family-reveal-secret.txt}

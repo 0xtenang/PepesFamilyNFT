@@ -32,8 +32,8 @@ interface IArbSys {
     function arbBlockHash(uint256 arbBlockNum) external view returns (bytes32);
 }
 
-/// @title PepesFamily: the PEPES FAMILY collection
-/// @notice PEPES FAMILY (symbol PEPES): 3,333 Pepes drawn from IMD's own Pepe (imd.fun), stored and drawn entirely
+/// @title PepesFamily: the Pepes Family collection
+/// @notice Pepes Family (symbol Pepes): 3,333 Pepes drawn from IMD's own Pepe (imd.fun), stored and drawn entirely
 ///         on chain: ImdPepeArt writes each NFT's picture (IMD's art in one of 19 poses, recoloured, with a background
 ///         and maybe an extra) from one of the 3,333 trait sets in ImdPepeSpecs (no two alike; four of them 1/1s). Minted blind,
 ///         then revealed: a keyed shuffle of the token ids, from a seed nobody can know before everyone can, decides
@@ -197,7 +197,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         bytes32 seedCommit_,
         address validator_,
         ImdPepeArt art_
-    ) ERC721("PEPES FAMILY", "PEPES") Ownable(owner_) {
+    ) ERC721("Pepes Family", "Pepes") Ownable(owner_) {
         _checkTreasury(treasury_);
         if (address(art_).code.length == 0) revert NotAContract();
         treasury = treasury_;
@@ -353,7 +353,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         bytes memory json;
         if (seed == 0) {
             json = abi.encodePacked(
-                '{"name":"PEPES FAMILY #',
+                '{"name":"Pepes Family #',
                 tokenId.toString(),
                 '","description":"A sealed PEPE. Its look is revealed after the mint.","image":"data:image/svg+xml;base64,',
                 FastBase64.encode(bytes(art.sealedSvg())),
@@ -362,7 +362,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         } else {
             uint256 i = _shuffle(seed, tokenId - 1);
             json = abi.encodePacked(
-                '{"name":"PEPES FAMILY #',
+                '{"name":"Pepes Family #',
                 tokenId.toString(),
                 '","description":"',
                 description,
@@ -390,7 +390,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         string memory links;
         if (bytes(website).length != 0) links = string.concat(" Website: ", website);
         if (bytes(xLink).length != 0) links = string.concat(links, " X: ", xLink);
-        string memory json = string.concat('{"name":"PEPES FAMILY","description":"', description, links, '"');
+        string memory json = string.concat('{"name":"Pepes Family","description":"', description, links, '"');
         if (bytes(collectionImage).length != 0) {
             json = string.concat(json, ',"image":"', collectionImage, '","featured_image":"', collectionImage, '"');
         }

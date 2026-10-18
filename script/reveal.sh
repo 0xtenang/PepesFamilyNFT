@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Reveals PEPES FAMILY after the mint: closes the sale, publishes the secret committed at deploy (reveal), then seals
+# Reveals Pepes Family after the mint: closes the sale, publishes the secret committed at deploy (reveal), then seals
 # the seed at once (seal: anyone can, for 256 L2 blocks, about 26 seconds on Robinhood Chain). Every frog's look then
 # shows, for everyone at once.
 #

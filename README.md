@@ -1,8 +1,8 @@
-# PEPES FAMILY
+# Pepes Family
 
 **Launch page:** open `index.html` from this repo's website (GitHub Pages) in the browser that has your wallet extension.
 
-![PEPES FAMILY, as the chain draws them](preview.png)
+![Pepes Family, as the chain draws them](preview.png)
 
 3,333 Pepes on Robinhood Chain (chain 4663), drawn from **IMD's own Pepe** (the character on [imd.fun](https://imd.fun),
 used at the IMD team's request) and **fully on chain**: IMD's 19 poses are stored in contract code, and a contract
@@ -17,10 +17,10 @@ The mint, commit-reveal, royalty enforcement and links are I'M DEGEN's
 
 | | |
 |---|---|
-| Name / symbol | PEPES FAMILY / PEPES |
+| Name / symbol | Pepes Family / Pepes |
 | Supply | 3,333, no two alike (four 1/1s: Genesis, The Swarm, Golden Pepe, Night Shift) |
 | Traits | Pose (19), Skin (7), Shirt (9), Shorts (6), Background (10), Extra (4) |
-| Price | 0.0004 ETH (about $1 at ETH $2,450); the owner can change it with `setPrice` |
+| Price | 0.000413 ETH ($1 at ETH $2,424, 2026-10-18); the owner can change it with `setPrice` |
 | Wallet limit | 3 per wallet (owner can set 1 to 50); wallets only, no contracts |
 | Owner | `0x3c8A4d94B3219F6633F2cC94094f4765b30c691C` (can never be renounced, so OpenSea Studio always works) |
 | Treasury | the same address: all mint money, straight away, and the 5% royalty |

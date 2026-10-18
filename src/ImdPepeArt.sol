@@ -11,7 +11,7 @@ interface IImdPepeSpecs {
 }
 
 /// @title ImdPepeArt
-/// @notice Draws every PEPES FAMILY picture on chain from IMD's own Pepe (imd.fun's sprite sheet: 19 frames, stored
+/// @notice Draws every Pepes Family picture on chain from IMD's own Pepe (imd.fun's sprite sheet: 19 frames, stored
 ///         in the ImdPepeData contracts): a background, the Pepe in its pose with its skin, shirt and shorts
 ///         recoloured by SVG filters (colour-keyed masks keep IMD's lines and shading), a shadow, and maybe headphones,
 ///         a halo or shades. Also lists the traits. Holds no state and has no owner.

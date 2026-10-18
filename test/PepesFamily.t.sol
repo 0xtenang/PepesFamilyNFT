@@ -55,8 +55,8 @@ contract PepesFamilyTest is MiniTest {
     }
 
     function test_TheCollection() public view {
-        assertEq(pepes.name(), "PEPES FAMILY", "name");
-        assertEq(pepes.symbol(), "PEPES", "symbol");
+        assertEq(pepes.name(), "Pepes Family", "name");
+        assertEq(pepes.symbol(), "Pepes", "symbol");
         assertEq(pepes.owner(), OWNER, "owner");
         assertEq(pepes.treasury(), OWNER, "treasury");
         assertEq(pepes.price(), PRICE, "price");

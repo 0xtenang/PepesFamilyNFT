@@ -74,7 +74,7 @@ const secret = await evaluate(`document.getElementById("secret").textContent`);
 await evaluate(`(() => { const i = document.getElementById("secretCheck"); i.value = "${secret}"; i.dispatchEvent(new Event("input")); })()`);
 ok(!(await evaluate(`document.getElementById("deploy").disabled`)), "deploy unlocked");
 await click("deploy");
-await waitLog("PEPES FAMILY is deployed", 300000);
+await waitLog("Pepes Family is deployed", 300000);
 await sleep(800);
 const rec = JSON.parse(await evaluate(`document.getElementById("record").textContent`));
 const P = rec.pepesFamily;

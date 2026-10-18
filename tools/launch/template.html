@@ -1,4 +1,4 @@
-<title>PEPES FAMILY Launch</title>
+<title>Pepes Family Launch</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -131,9 +131,9 @@ pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8
   <section class="step" id="s4" data-state="locked">
     <div class="step-head"><span class="num">4</span><h2>Deploy the contracts</h2><span class="pill" id="s4pill">0 of 11</span></div>
     <div class="row">
-      <label for="price">Mint price (ETH a Pepe)<input id="price" value="0.0004" inputmode="decimal"></label>
+      <label for="price">Mint price (ETH a Pepe)<input id="price" value="0.000413" inputmode="decimal"></label>
     </div>
-    <p class="note">0.0004 ETH is about $1 with ETH near $2,450. You can change it any time after deploying.
+    <p class="note">0.000413 ETH is $1 with ETH at $2,424 (18 Oct 2026). You can change it any time after deploying.
       Your wallet asks you to approve four transactions, one after another.</p>
     <div class="contracts" id="contracts"></div>
     <div class="row"><button class="go" id="deploy" disabled>Deploy</button></div>
@@ -153,7 +153,7 @@ pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8
       <span class="note" id="mintState"></span>
     </div>
     <div class="row">
-      <label for="newPrice">Change the price (ETH)<input id="newPrice" placeholder="0.0004" inputmode="decimal"></label>
+      <label for="newPrice">Change the price (ETH)<input id="newPrice" placeholder="0.000413" inputmode="decimal"></label>
     </div>
     <div class="row"><button id="setPrice" disabled>Set price</button></div>
   </section>
@@ -196,7 +196,7 @@ const PARTS = [
   { key: "parts", label: "Picture parts (ImdPepeParts)" },
   ...FRAME_PARTS.map((k) => ({ key: k, label: `IMD's Pepe frames, part ${Number(k.slice(4)) + 1} of ${FRAME_PARTS.length} (ImdPepeData${k.slice(4)})` })),
   { key: "art", label: "Art (ImdPepeArt)" },
-  { key: "pepes", label: "PEPES FAMILY" },
+  { key: "pepes", label: "Pepes Family" },
 ];
 const $ = (id) => document.getElementById(id);
 const E = window.ethers;
@@ -320,7 +320,7 @@ async function deployPart(key, args) {
 $("deploy").addEventListener("click", async () => {
   if (st.busy) return;
   let priceWei;
-  try { priceWei = E.parseEther($("price").value.trim() || "0"); } catch { log("The price isn't a number of ETH (like 0.0004)."); return; }
+  try { priceWei = E.parseEther($("price").value.trim() || "0"); } catch { log("The price isn't a number of ETH (like 0.000413)."); return; }
   st.busy = true; render();
   try {
     const enc = E.AbiCoder.defaultAbiCoder();
@@ -333,7 +333,7 @@ $("deploy").addEventListener("click", async () => {
     if (LOCAL_TEST && !(await hasCode(VALIDATOR))) validator = await deployPart("validator");
     await deployPart("pepes", enc.encode(["address", "address", "uint256", "bytes32", "address", "address"],
       [OWNER, OWNER, priceWei, commit(), validator, art]));
-    log("PEPES FAMILY is deployed. Next: links, then open the mint.");
+    log("Pepes Family is deployed. Next: links, then open the mint.");
   } catch (e) { log("Stopped: " + errText(e) + " Press Deploy again to continue where it stopped."); }
   st.busy = false; await refresh();
 });
