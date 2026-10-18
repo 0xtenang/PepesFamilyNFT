@@ -20,12 +20,12 @@ const NAMES = ["Swarm Backpack", "Black Backpack", "Red Backpack", "Gold Backpac
   const T = await (await fetch("../../art/imd/extras.json")).json();
   let html = "<tr><th></th>" + NAMES.map((n) => `<th>${n}</th>`).join("") + "</tr>";
   for (let i = 0; i < frames.length; i++) {
-    const f = frames[i], v = VIEWS[i], [hx, hy, hs, hr] = T.hat[i], e = T.eyes[i], [px, py, ps] = T.pack[i];
+    const f = frames[i], v = VIEWS[i], [hx, hy, hs, hr] = T.hat[i], e = T.eyes[i], [px, py, ps, pv, pf] = T.pack[i];
     html += `<tr><th>${i}<br>${v}</th>`;
     for (const n of NAMES) {
-      const d = (T.extras[n] || {})[v] || ["", ""];
+      const d = (T.extras[n] || {})[T.color[n] ? pv : v] || ["", ""];
       let at = "";
-      if (T.color[n]) at = `translate(${px} ${py}) scale(${ps / 100})" color="${T.color[n]}`;
+      if (T.color[n]) at = `translate(${px} ${py}) scale(${pf ? -ps / 100 : ps / 100} ${ps / 100})" color="${T.color[n]}`;
       else if (n === "Shades") at = e ? `translate(${e[0]} ${e[1]}) scale(${e[2] / 100})` : "";
       else at = `translate(${hx} ${hy}) rotate(${hr}) scale(${hs / 100})`;
       const layer = (k) => (at && d[k] ? `<g transform="${at}" ${T.line}>${d[k]}</g>` : "");

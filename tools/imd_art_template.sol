@@ -20,9 +20,9 @@ contract ImdPepeArt {
 
     uint256 public constant SUPPLY = @SUPPLY@;
     uint256 public constant FRAMES = @FRAMES@;
-    /// @dev Per frame, 21 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
+    /// @dev Per frame, 22 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
     ///      where head extras go (x, y, scale %, tilt + 128 degrees), the eyes (x, y, scale %; 0: no face), facing (0
-    ///      back, 1 side, 2 front), where a backpack goes (torso x, y, scale %).
+    ///      back, 1 side, 2 front), where a backpack goes (torso x, y, scale % + 128 if mirrored, its view).
     bytes private constant FRAME_TABLE =
 @FRAME_TABLE@;
     /// @dev Where each piece of text starts and ends in ImdPepeParts (2 + 2 bytes each).
@@ -78,6 +78,7 @@ contract ImdPepeArt {
         uint256 packX;
         uint256 packY;
         uint256 packS;
+        uint256 packFacing;
     }
 
     // ---------------------------------------------------------------- reading
@@ -109,7 +110,7 @@ contract ImdPepeArt {
         bytes memory t = FRAME_TABLE;
         uint256 w;
         assembly ("memory-safe") {
-            w := mload(add(add(t, 32), mul(i, 21)))
+            w := mload(add(add(t, 32), mul(i, 22)))
         }
         f.chunk = w >> 248;
         f.offset = (w >> 232) & 0xffff;
@@ -129,6 +130,7 @@ contract ImdPepeArt {
         f.packX = (w >> 104) & 255;
         f.packY = (w >> 96) & 255;
         f.packS = (w >> 88) & 255;
+        f.packFacing = (w >> 80) & 255;
     }
 
     /// @dev Frame `f`'s WebP bytes, from its data contract's code.
@@ -178,12 +180,14 @@ contract ImdPepeArt {
     /// @dev Layer `layer` (0: behind the Pepe, 1: over it) of extra `e`, placed as tuned for the frame: backpacks on
     ///      the back (in their colour), headphones and the halo around the head, shades on the eyes; in IMD's line style.
     function _extra(uint256 e, Frame memory f, uint256 layer) private view returns (string memory) {
-        string memory art = _part(EXTRA_SVG + (e * 3 + f.facing) * 2 + layer);
+        bool body = (BODY >> e) & 1 == 1;
+        string memory art = _part(EXTRA_SVG + (e * 3 + (body ? f.packFacing : f.facing)) * 2 + layer);
         if (bytes(art).length == 0) return "";
         string memory at;
-        if ((BODY >> e) & 1 == 1) {
-            at = string.concat(f.packX.toString(), " ", f.packY.toString(), ") scale(", _dec(f.packS), ')" color="',
-                _part(EXTRA_COLOR + e));
+        if (body) {
+            string memory s = _dec(f.packS & 127);
+            at = string.concat(f.packX.toString(), " ", f.packY.toString(), ") scale(", f.packS > 127 ? "-" : "", s, " ", s,
+                ')" color="', _part(EXTRA_COLOR + e));
         } else if (e == SHADES) {
             if (f.eyesS == 0) return "";
             at = string.concat(f.eyesX.toString(), " ", f.eyesY.toString(), ") scale(", _dec(f.eyesS), ")");

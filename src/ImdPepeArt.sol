@@ -20,19 +20,19 @@ contract ImdPepeArt {
 
     uint256 public constant SUPPLY = 3333;
     uint256 public constant FRAMES = 19;
-    /// @dev Per frame, 21 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
+    /// @dev Per frame, 22 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
     ///      where head extras go (x, y, scale %, tilt + 128 degrees), the eyes (x, y, scale %; 0: no face), facing (0
-    ///      back, 1 side, 2 front), where a backpack goes (torso x, y, scale %).
+    ///      back, 1 side, 2 front), where a backpack goes (torso x, y, scale % + 128 if mirrored, its view).
     bytes private constant FRAME_TABLE =
-        hex"060000189836408c00d2814366800000000078bf6404360c1956383e8700d4814362800000000078bc64050000194436"
-        hex"388d00da823c67800000000078b76406189816fe37488100cb7a4f5c800000000077be6405327218b037478200ca7b50"
-        hex"60800000000077be64031b8c1b6237469e00cc824a6880000000007bbe640400001b2837459400cd7f48688000000000"
-        hex"79bf640145ec19da41418100d181445e800000000174ba6402000020e2293eab00d482425e800000000177bc64041b28"
-        hex"1ae4433e7a00d4804158800000000178bc6401000023b20244e200ce864755800000000177b964051944192e44427700"
-        hex"d0804455800000000178be640336ee1b4636438600cf794763800000000177be640300001b8c38558d00bd795962809f"
-        hex"76470276c8640220e22078364c8500c6774f6480796e650278c16402415a1ba038418300d17a425e7a794f3f0279bd64"
-        hex"0123b2223a274c9400c6764f68807a6e640277c1640025d625c2260da50106781868800000000078b46400000025d604"
-        hex"36ec00dd7a4468800000000079b864";
+        hex"060000189836408c00d2814366800000000078bf640004360c1956383e8700d4814362800000000078bc640005000019"
+        hex"4436388d00da823c67800000000078b7640006189816fe37488100cb7a4f5c800000000077be640005327218b0374782"
+        hex"00ca7b5060800000000077be6400031b8c1b6237469e00cc824a6880000000007bbe64000400001b2837459400cd7f48"
+        hex"68800000000079bf64000145ec19da41418100d181445e800000000174ba640102000020e2293eab00d482425e800000"
+        hex"000177bc6401041b281ae4433e7a00d4804158800000000178bc640101000023b20244e200ce864755800000000177b9"
+        hex"6401051944192e44427700d0804455800000000178be64010336ee1b4636438600cf794763800000000174be60000300"
+        hex"001b8c38558d00bd795962809f76470276c8e4020220e22078364c8500c6774f6480796e650278c1640202415a1ba038"
+        hex"418300d17a425e7a794f3f0279bd64020123b2223a274c9400c6764f68807a6e640277c164020025d625c2260da50106"
+        hex"781868800000000078b4640000000025d60436ec00dd7a4468800000000079b86400";
     /// @dev Where each piece of text starts and ends in ImdPepeParts (2 + 2 bytes each).
     bytes private constant PART_INDEX =
         hex"0000000c000c001800180026002600370037003e003e005100510059005900640064006b006b00740074007b007b0085"
@@ -43,12 +43,12 @@ contract ImdPepeArt {
         hex"01af01b601b601bf01bf01ca01ca01d501af01af01d502270227027a027a02cd02cd032103210373037303c701af01af"
         hex"03c704190419046d046d04bb04bb050e050e0562056205b605b6060a060a065c01af01af065c06b006b0070307030757"
         hex"075707ab07ab07ff07ff130113011ef51ef527d227d22801280128302830285f285f288e288e28bd28bd28ec28ec291b"
-        hex"01af01af01af01af01af01af01af01af01af01af01af01af01af01af291b2ace2ace2c2d2c2d2cee2cee2d392d392e6f"
-        hex"01af01af291b2ace2ace2c2d2c2d2cee2cee2d392d392e6f01af01af2e6f2f9c01af01af2f9c308e01af01af2e6f2f9c"
-        hex"01af01af291b2ace2ace2c2d2c2d2cee2cee2d392d392e6f01af01af308e31c001af01af308e31c001af01af308e31c0"
-        hex"01af01af31c0327301af01af31c0327301af01af31c0327301af01af291b2ace2ace2c2d2c2d2cee2cee2d392d392e6f"
-        hex"01af01af3273327a327a328101af01af3281328801af01af01af01af3288328f328f3399339934a434a4367c367c36c1"
-        hex"36c1370937093754";
+        hex"01af01af01af01af01af01af01af01af01af01af01af01af01af01af291b2ace2ace2c4a2c4a2d882d882e3f2e3f2f75"
+        hex"01af01af291b2ace2ace2c4a2c4a2d882d882e3f2e3f2f7501af01af2f7530a201af01af30a2319401af01af2f7530a2"
+        hex"01af01af291b2ace2ace2c4a2c4a2d882d882e3f2e3f2f7501af01af319432c601af01af319432c601af01af319432c6"
+        hex"01af01af32c6337901af01af32c6337901af01af32c6337901af01af291b2ace2ace2c4a2c4a2d882d882e3f2e3f2f75"
+        hex"01af01af337933803380338701af01af3387338e01af01af01af01af338e33953395349f349f35aa35aa3782378237c7"
+        hex"37c7380f380f385a";
     uint256 private constant POSE = 0;
     uint256 private constant SKIN = 19;
     uint256 private constant SHIRT = 26;
@@ -74,7 +74,7 @@ contract ImdPepeArt {
     error BadIndex();
 
     constructor(IImdPepeSpecs specs_, address parts_, address data0_, address data1_, address data2_, address data3_, address data4_, address data5_, address data6_) {
-        if (address(specs_).code.length == 0 || parts_.code.length != 14165 || data0_.code.length == 0 || data1_.code.length == 0 || data2_.code.length == 0 || data3_.code.length == 0 || data4_.code.length == 0 || data5_.code.length == 0 || data6_.code.length == 0) revert BadIndex();
+        if (address(specs_).code.length == 0 || parts_.code.length != 14427 || data0_.code.length == 0 || data1_.code.length == 0 || data2_.code.length == 0 || data3_.code.length == 0 || data4_.code.length == 0 || data5_.code.length == 0 || data6_.code.length == 0) revert BadIndex();
         specs = specs_;
         parts = parts_;
         data[0] = data0_;
@@ -105,6 +105,7 @@ contract ImdPepeArt {
         uint256 packX;
         uint256 packY;
         uint256 packS;
+        uint256 packFacing;
     }
 
     // ---------------------------------------------------------------- reading
@@ -136,7 +137,7 @@ contract ImdPepeArt {
         bytes memory t = FRAME_TABLE;
         uint256 w;
         assembly ("memory-safe") {
-            w := mload(add(add(t, 32), mul(i, 21)))
+            w := mload(add(add(t, 32), mul(i, 22)))
         }
         f.chunk = w >> 248;
         f.offset = (w >> 232) & 0xffff;
@@ -156,6 +157,7 @@ contract ImdPepeArt {
         f.packX = (w >> 104) & 255;
         f.packY = (w >> 96) & 255;
         f.packS = (w >> 88) & 255;
+        f.packFacing = (w >> 80) & 255;
     }
 
     /// @dev Frame `f`'s WebP bytes, from its data contract's code.
@@ -205,12 +207,14 @@ contract ImdPepeArt {
     /// @dev Layer `layer` (0: behind the Pepe, 1: over it) of extra `e`, placed as tuned for the frame: backpacks on
     ///      the back (in their colour), headphones and the halo around the head, shades on the eyes; in IMD's line style.
     function _extra(uint256 e, Frame memory f, uint256 layer) private view returns (string memory) {
-        string memory art = _part(EXTRA_SVG + (e * 3 + f.facing) * 2 + layer);
+        bool body = (BODY >> e) & 1 == 1;
+        string memory art = _part(EXTRA_SVG + (e * 3 + (body ? f.packFacing : f.facing)) * 2 + layer);
         if (bytes(art).length == 0) return "";
         string memory at;
-        if ((BODY >> e) & 1 == 1) {
-            at = string.concat(f.packX.toString(), " ", f.packY.toString(), ") scale(", _dec(f.packS), ')" color="',
-                _part(EXTRA_COLOR + e));
+        if (body) {
+            string memory s = _dec(f.packS & 127);
+            at = string.concat(f.packX.toString(), " ", f.packY.toString(), ") scale(", f.packS > 127 ? "-" : "", s, " ", s,
+                ')" color="', _part(EXTRA_COLOR + e));
         } else if (e == SHADES) {
             if (f.eyesS == 0) return "";
             at = string.concat(f.eyesX.toString(), " ", f.eyesY.toString(), ") scale(", _dec(f.eyesS), ")");

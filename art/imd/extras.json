@@ -142,97 +142,135 @@
   [
    120,
    191,
-   100
+   100,
+   "back",
+   0
   ],
   [
    120,
    188,
-   100
+   100,
+   "back",
+   0
   ],
   [
    120,
    183,
-   100
+   100,
+   "back",
+   0
   ],
   [
    119,
    190,
-   100
+   100,
+   "back",
+   0
   ],
   [
    119,
    190,
-   100
+   100,
+   "back",
+   0
   ],
   [
    123,
    190,
-   100
+   100,
+   "back",
+   0
   ],
   [
    121,
    191,
-   100
+   100,
+   "back",
+   0
   ],
   [
    116,
    186,
-   100
+   100,
+   "side",
+   0
   ],
   [
    119,
    188,
-   100
+   100,
+   "side",
+   0
   ],
   [
    120,
    188,
-   100
+   100,
+   "side",
+   0
   ],
   [
    119,
    185,
-   100
+   100,
+   "side",
+   0
   ],
   [
    120,
    190,
-   100
+   100,
+   "side",
+   0
   ],
   [
-   119,
+   116,
    190,
-   100
+   96,
+   "back",
+   0
   ],
   [
    118,
    200,
-   100
+   100,
+   "front",
+   1
   ],
   [
    120,
    193,
-   100
+   100,
+   "front",
+   0
   ],
   [
    121,
    189,
-   100
+   100,
+   "front",
+   0
   ],
   [
    119,
    193,
-   100
+   100,
+   "front",
+   0
   ],
   [
    120,
    180,
-   100
+   100,
+   "back",
+   0
   ],
   [
    121,
    184,
-   100
+   100,
+   "back",
+   0
   ]
  ],
  "color": {
@@ -276,12 +314,12 @@
     "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
    ],
    "side": [
-    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
-    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M-40-46C-62-48-86-40-90-14C-94 12-86 34-62 38C-52 40-44 38-40 34Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-74-30C-70-38-62-42-54-42\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ],
    "front": [
-    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
-    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M20-44C50-50 78-40 84-12C90 16 80 36 56 40L30 40Z\" fill=\"currentColor\"/><path d=\"M64-30C70-26 74-20 76-12\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ]
   },
   "Black Backpack": {
@@ -290,12 +328,12 @@
     "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
    ],
    "side": [
-    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
-    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M-40-46C-62-48-86-40-90-14C-94 12-86 34-62 38C-52 40-44 38-40 34Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-74-30C-70-38-62-42-54-42\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ],
    "front": [
-    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
-    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M20-44C50-50 78-40 84-12C90 16 80 36 56 40L30 40Z\" fill=\"currentColor\"/><path d=\"M64-30C70-26 74-20 76-12\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ]
   },
   "Red Backpack": {
@@ -304,12 +342,12 @@
     "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
    ],
    "side": [
-    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
-    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M-40-46C-62-48-86-40-90-14C-94 12-86 34-62 38C-52 40-44 38-40 34Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-74-30C-70-38-62-42-54-42\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ],
    "front": [
-    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
-    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M20-44C50-50 78-40 84-12C90 16 80 36 56 40L30 40Z\" fill=\"currentColor\"/><path d=\"M64-30C70-26 74-20 76-12\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ]
   },
   "Gold Backpack": {
@@ -318,12 +356,12 @@
     "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
    ],
    "side": [
-    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
-    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M-40-46C-62-48-86-40-90-14C-94 12-86 34-62 38C-52 40-44 38-40 34Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"currentColor\"/><path d=\"M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-74-30C-70-38-62-42-54-42\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-50-36C-38-46-22-46-12-36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-48 26C-38 26-28 22-20 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ],
    "front": [
-    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
-    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+    "<path d=\"M20-44C50-50 78-40 84-12C90 16 80 36 56 40L30 40Z\" fill=\"currentColor\"/><path d=\"M64-30C70-26 74-20 76-12\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M-32-28C-34-12-40 2-52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke-width=\"11\"/><path d=\"M32-28C34-12 40 2 52 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"6.5\"/>"
    ]
   },
   "Shades": {

@@ -121,22 +121,29 @@ def at(dy, svg):
 
 
 def strap(d):
-    """A backpack strap along path d: a dark outline and the pack's colour inside."""
-    return f'<path d="{d}" fill="none" stroke-width="10"/><path d="{d}" fill="none" stroke="currentColor" stroke-width="5.5"/>'
+    """A flat backpack strap along path d: a dark outline and the pack's colour inside."""
+    return f'<path d="{d}" fill="none" stroke-width="11"/><path d="{d}" fill="none" stroke="currentColor" stroke-width="6.5"/>'
 
 
 SHADE = 'fill="#000" fill-opacity=".12" stroke="none"'
+SHINE = 'fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3.5"'
 POCKET = '<rect x="-34" y="-10" width="68" height="46" rx="16" fill="currentColor"/><rect x="-34" y="-10" width="68" height="46" rx="16" ' + SHADE + '/>'
+# From behind: the whole pack on the back.
 PACK_BACK = ('<rect x="-52" y="-48" width="104" height="92" rx="34" fill="currentColor"/>' + POCKET +
              '<path d="M-26 2H26" fill="none"/><path d="M-12-48C-12-58 12-58 12-48" fill="none"/>'
-             '<path d="M-38-28C-38-36-32-40-24-40" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3.5"/>')
-PACK_SIDE = ('<rect x="-96" y="-50" width="72" height="92" rx="30" fill="currentColor"/>'
-             '<rect x="-106" y="-6" width="28" height="42" rx="11" fill="currentColor"/><rect x="-106" y="-6" width="28" height="42" rx="11" ' + SHADE + '/>'
-             '<path d="M-82-32C-82-40-76-44-68-44" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3.5"/>')
-PACK_FRONT = '<rect x="-80" y="-50" width="160" height="92" rx="38" fill="currentColor"/>'
-BACKPACK = [('', PACK_BACK),
-            (PACK_SIDE, strap('M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10')),
-            (PACK_FRONT, strap('M-36-40C-40-20-40 0-36 16') + strap('M36-40C40-20 40 0 36 16'))]
+             '<path d="M-38-28C-38-36-32-40-24-40" ' + SHINE + '/>')
+# From the side (facing right): the pack flat against the back, behind the Pepe; over it, the strap coming over the
+# shoulder into the armpit (the arm hides the rest) and the lower strap coming round the waist from the pack.
+PACK_SIDE = ('<path d="M-40-46C-62-48-86-40-90-14C-94 12-86 34-62 38C-52 40-44 38-40 34Z" fill="currentColor"/>'
+             '<path d="M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z" fill="currentColor"/><path d="M-84-6C-98-6-102 6-100 18C-98 30-90 34-80 30Z" ' + SHADE + '/>'
+             '<path d="M-74-30C-70-38-62-42-54-42" ' + SHINE + '/>')
+PACK_SIDE_OVER = strap('M-50-36C-38-46-22-46-12-36') + strap('M-48 26C-38 26-28 22-20 16')
+# From the front: the pack peeking out behind one shoulder and side (as in IMD's crowd art), and the two straps from
+# under the chin down into the armpits.
+PACK_FRONT = ('<path d="M20-44C50-50 78-40 84-12C90 16 80 36 56 40L30 40Z" fill="currentColor"/>'
+              '<path d="M64-30C70-26 74-20 76-12" ' + SHINE + '/>')
+PACK_FRONT_OVER = strap('M-32-28C-34-12-40 2-52 12') + strap('M32-28C34-12 40 2 52 12')
+BACKPACK = [('', PACK_BACK), (PACK_SIDE, PACK_SIDE_OVER), (PACK_FRONT, PACK_FRONT_OVER)]
 BAND = ('<path d="{d}" fill="none" stroke-width="7"/><path d="{d}" fill="none" stroke="#4b5563" stroke-width="3"/>')
 HALO = '<ellipse cy="-26" rx="40" ry="9" fill="none" stroke-width="7"/><ellipse cy="-26" rx="40" ry="9" fill="none" stroke="#fde047" stroke-width="3.5"/>'
 HP_FRONT = (BAND.format(d='M-64 42C-66-22 66-22 64 42') +
@@ -163,11 +170,14 @@ HAT = [(129, 67, 102, 0), (129, 67, 98, 0), (130, 60, 103, 0), (122, 79, 92, 0),
        (121, 71, 99, 0), (121, 89, 98, 0), (119, 79, 100, 0), (122, 66, 94, -6), (118, 79, 104, 0), (120, 24, 104, 0),
        (122, 68, 104, 0)]
 EYES = {13: (159, 118, 71), 14: (121, 110, 101), 15: (121, 79, 63), 16: (122, 110, 100)}
-# Where a backpack goes: the torso's centre (x, y; the middle of the shirt, measured) and scale (%, of a 128-wide torso).
-PACK = [(120, 191, 100), (120, 188, 100), (120, 183, 100), (119, 190, 100), (119, 190, 100), (123, 190, 100),
-        (121, 191, 100), (116, 186, 100), (119, 188, 100), (120, 188, 100), (119, 185, 100), (120, 190, 100),
-        (119, 190, 100), (118, 200, 100), (120, 193, 100), (121, 189, 100), (119, 193, 100), (120, 180, 100),
-        (121, 184, 100)]
+# Where a backpack goes: the torso's centre (x, y; the middle of the shirt, measured), scale (%, of a 128-wide torso),
+# which view of the pack fits the pose (back, side, front; "Over the Shoulder" shows the back) and whether to mirror it
+# (front frames peek it out behind the shoulder away from where the Pepe looks).
+PACK = [(120, 191, 100, 'back', 0), (120, 188, 100, 'back', 0), (120, 183, 100, 'back', 0), (119, 190, 100, 'back', 0),
+        (119, 190, 100, 'back', 0), (123, 190, 100, 'back', 0), (121, 191, 100, 'back', 0), (116, 186, 100, 'side', 0),
+        (119, 188, 100, 'side', 0), (120, 188, 100, 'side', 0), (119, 185, 100, 'side', 0), (120, 190, 100, 'side', 0),
+        (116, 190, 96, 'back', 0), (118, 200, 100, 'front', 1), (120, 193, 100, 'front', 0), (121, 189, 100, 'front', 0),
+        (119, 193, 100, 'front', 0), (120, 180, 100, 'back', 0), (121, 184, 100, 'back', 0)]
 
 
 # ---------------------------------------------------------------- trait sets
@@ -270,7 +280,7 @@ def frame_table(table):
         ex, ey, es = EYES.get(i, (0, 0, 0))
         b += bytes([c]) + off.to_bytes(2, 'big') + ln.to_bytes(2, 'big')
         b += bytes([f['x'], f['y'], f['w']]) + f['h'].to_bytes(2, 'big')
-        b += bytes([hx, hy, hs, hr + 128, ex, ey, es, views[VIEW[i]]]) + bytes(PACK[i])
+        b += bytes([hx, hy, hs, hr + 128, ex, ey, es, views[VIEW[i]]]) + bytes([PACK[i][0], PACK[i][1], PACK[i][2] | PACK[i][4] << 7, views[PACK[i][3]]])
     return bytes(b)
 
 
