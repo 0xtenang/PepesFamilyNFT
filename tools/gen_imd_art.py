@@ -52,9 +52,10 @@ ONE_OF_ONES = [
 ]
 
 # The regions' base lightness (0-255) on IMD's art, and the masks that pick them out by colour (alpha rows of
-# feColorMatrix: R G B A offset). Tuned on the sheet: tuned by eye on all 19 frames, lips kept out.
+# feColorMatrix: R G B A offset), tuned by eye on all 19 frames. The shorts are only recoloured below the head (the
+# contract clips them), so the lips, close to the shorts in colour, are never caught.
 BASE = {'skin': 124, 'shirt': 71, 'shorts': 145}
-MASKS = {'skin': ['-10 20 -10 0 -0.8'], 'shirt': ['-6 -3 6 0 -0.4'], 'shorts': ['14 -14 0 0 -0.45', '-27.2 40 0 0 -0.2']}
+MASKS = {'skin': ['-10 20 -10 0 -0.8'], 'shirt': ['-6 -3 6 0 -0.4'], 'shorts': ['14 -14 0 0 -0.45', '-27.2 40 0 0 0.05']}
 
 
 def tint(hexc, base):
@@ -129,23 +130,26 @@ CROWN = ('<path d="M-32 14L-36-18L-18-4L-2-26L14-4L32-18L30 14C10 10-12 10-32 14
          '<g fill="#facc15"><circle cx="-36" cy="-19" r="3"/><circle cx="-2" cy="-27" r="3"/><circle cx="32" cy="-19" r="3"/></g>')
 HP_FRONT = (BAND.format(d='M-64 42C-66-22 66-22 64 42') +
             '<ellipse cx="-64" cy="46" rx="10" ry="16" fill="#e11d48"/><ellipse cx="64" cy="46" rx="10" ry="16" fill="#e11d48"/>')
-# [back, side (facing right), front]
+CAP = (CAP_DOME + '<path d="M0-23C2-6 2 8 0 19" fill="none"/><circle cy="-24" r="3" fill="#1d4ed8"/>'
+       '<path d="M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z" fill="#1e40af"/>')
+
+
+def float_above(bottom, svg):
+    """A hat floating just above the head, like the halo: 85% size, its lowest point 10 above the head's top."""
+    return f'<g transform="translate(0 {-10 - bottom * 0.85:g}) scale(.85)">{svg}</g>'
+
+
+# [back, side (facing right), front]. Hats float above the head (they never press on IMD's drawing); headphones wrap
+# it, in each view.
 EXTRA_SVG = {
-    'Cap': [at(20, CAP_DOME + '<path d="M0-23C2-6 2 8 0 12" fill="none"/><path d="M-14 22C-8 13 8 13 14 22" fill="#e9e9e6"/>'),
-            at(16, '<path d="M-58 32C-64 4-40-12-8-12C14-12 32-4 38 8C10 12-30 20-58 32Z" fill="#2563eb"/>'
-                   '<path d="M-10-11C-6 2-4 12-6 20" fill="none"/><path d="M32 6C48 0 70 0 78 6C66 12 48 13 30 12Z" fill="#1e40af"/>'),
-            at(2, CAP_DOME + '<path d="M0-23C2-6 2 8 0 19" fill="none"/><circle cy="-24" r="3" fill="#1d4ed8"/>'
-                  '<path d="M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z" fill="#1e40af"/>')],
-    'Beanie': [at(22, BEANIE),
-               at(16, '<path d="M-62 36C-68 0-44-22-10-22C16-22 34-10 40 6C10 12-30 22-62 36Z" fill="#ea580c"/>'
-                      '<path d="M-64 26C-30 12 10 2 40-2L44 12C14 16-28 26-62 40Z" fill="#c2410c"/><circle cx="-14" cy="-24" r="8" fill="#fde68a"/>'),
-               at(10, BEANIE)],
+    'Cap': [float_above(33, CAP)] * 3,
+    'Beanie': [float_above(30, BEANIE)] * 3,
     'Headphones': [at(16, HP_FRONT),
                    at(10, BAND.format(d='M-48 40C-56-16 4-24 14 30') + '<ellipse cx="-22" cy="44" rx="12" ry="17" fill="#e11d48"/>'),
                    at(16, HP_FRONT)],
-    'Party Hat': [at(-2, PARTY)] * 3,
+    'Party Hat': [float_above(13, PARTY)] * 3,
     'Halo': [at(4, HALO)] * 3,
-    'Crown': [at(-4, CROWN)] * 3,
+    'Crown': [float_above(14, CROWN)] * 3,
 }
 # Shades sit on the eyes (front frames only), drawn on a 96-wide pair of eyes.
 SHADES_SVG = ('<path d="M-50-12h42c3 0 4 2 4 5v8c0 10-6 15-16 15h-18c-10 0-16-5-16-15v-8c0-3 1-5 4-5Z" fill="#111"/>'

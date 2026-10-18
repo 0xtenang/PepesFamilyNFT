@@ -38,8 +38,8 @@ contract ImdPepeArt {
         hex"00f100f600fa01020105010a010f011a01200126012a013001330137013c0141014401490151015901620167016b016e"
         hex"0177017c0187018b018f0192019801a201ab01b101b501ba01ba01c101ca01d501e001e00232028502d8032c037e03d2"
         hex"03d20424047804c60519056d05c106150667066706bb070e076207b6080a130c1f0027dd280c283b286a289928c828f7"
-        hex"292629262926292629fd2ae62bf82d302e272f5f308c317e32ab33b934c735d537073839396b3a1e3ad13b843ca43dc4"
-        hex"3ee43fee40f942d14316435e43a9";
+        hex"29262926292629262a482b6a2c8c2dd22f18305e318b327d33aa34c735e43701383339653a973b4a3bfd3cb03dde3f0c"
+        hex"403a4144424f4427446c44b444ff";
     uint256 private constant POSE = 0;
     uint256 private constant SKIN = 19;
     uint256 private constant SHIRT = 26;
@@ -62,7 +62,7 @@ contract ImdPepeArt {
     error BadIndex();
 
     constructor(IImdPepeSpecs specs_, address parts_, address data0_, address data1_, address data2_, address data3_, address data4_, address data5_, address data6_) {
-        if (address(specs_).code.length == 0 || parts_.code.length != 17322 || data0_.code.length == 0 || data1_.code.length == 0 || data2_.code.length == 0 || data3_.code.length == 0 || data4_.code.length == 0 || data5_.code.length == 0 || data6_.code.length == 0) revert BadIndex();
+        if (address(specs_).code.length == 0 || parts_.code.length != 17664 || data0_.code.length == 0 || data1_.code.length == 0 || data2_.code.length == 0 || data3_.code.length == 0 || data4_.code.length == 0 || data5_.code.length == 0 || data6_.code.length == 0) revert BadIndex();
         specs = specs_;
         parts = parts_;
         data[0] = data0_;
@@ -159,12 +159,8 @@ contract ImdPepeArt {
 
     // ---------------------------------------------------------------- the picture
 
-    /// @dev The recolouring filter: one block per recoloured region, each laid over the original.
-    function _filter(uint256 skin, uint256 shirt, uint256 shorts)
-        private
-        view
-        returns (string memory fx, string memory merge)
-    {
+    /// @dev The recolouring filter for the skin and the shirt: one block per recoloured region, laid over the original.
+    function _filter(uint256 skin, uint256 shirt) private view returns (string memory fx, string memory merge) {
         if (skin != 0) {
             fx = string.concat(fx, _part(FX), _part(TINT_SKIN + skin), _part(FX + 3));
             merge = string.concat(merge, '<feMergeNode in="skinc"/>');
@@ -173,23 +169,23 @@ contract ImdPepeArt {
             fx = string.concat(fx, _part(FX + 1), _part(TINT_SHIRT + shirt), _part(FX + 4));
             merge = string.concat(merge, '<feMergeNode in="shirtc"/>');
         }
-        if (shorts != 0) {
-            fx = string.concat(fx, _part(FX + 2), _part(TINT_SHORTS + shorts), _part(FX + 5));
-            merge = string.concat(merge, '<feMergeNode in="shortsc"/>');
-        }
     }
 
-    /// @dev The Pepe in frame `f` with its shadow, as an <image> (with the filter when there is one).
-    function _pepe(Frame memory f, bool filtered) private view returns (string memory) {
+    /// @dev Frame `f` as an <image> to <use> (id "p").
+    function _image(Frame memory f) private view returns (string memory) {
         return string.concat(
-            '<ellipse cx="', f.hatX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>',
-            '<image x="', f.x.toString(), '" y="', f.y.toString(), '" width="', f.w.toString(), '" height="', f.h.toString(),
-            '" href="data:image/webp;base64,', FastBase64.encode(_frameBytes(f)), filtered ? '" filter="url(#c)"/>' : '"/>'
+            '<image id="p" x="', f.x.toString(), '" y="', f.y.toString(), '" width="', f.w.toString(), '" height="',
+            f.h.toString(), '" href="data:image/webp;base64,', FastBase64.encode(_frameBytes(f)), '"/>'
         );
     }
 
-    /// @dev Extra `e` placed on the head (a hat, on its top; shades, on the eyes), as tuned for the frame, in IMD's
-    ///      line style.
+    /// @dev The shadow under frame `f`'s feet.
+    function _shadow(Frame memory f) private pure returns (string memory) {
+        return string.concat('<ellipse cx="', f.hatX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>');
+    }
+
+    /// @dev Extra `e` placed on the head as tuned for the frame (hats float just above it, like the halo; headphones
+    ///      wrap it; shades sit on the eyes), in IMD's line style.
     function _extra(uint256 e, Frame memory f) private view returns (string memory) {
         if (e == 0) return "";
         bool shades = e == SHADES;
@@ -205,20 +201,28 @@ contract ImdPepeArt {
         );
     }
 
+    /// @dev The picture: the frame, its skin and shirt recoloured by filter "c"; the shorts recoloured by filter "d"
+    ///      only below the head (clip "k", from y 175 of the frame), so lips, close in colour to the shorts, never are.
     function _svg(uint256 v) private view returns (string memory) {
         Frame memory f = _frame(v & 31);
-        (string memory fx, string memory merge) = _filter((v >> 5) & 7, (v >> 8) & 15, (v >> 12) & 7);
+        (string memory fx, string memory merge) = _filter((v >> 5) & 7, (v >> 8) & 15);
+        uint256 shorts = (v >> 12) & 7;
         bool filtered = bytes(fx).length != 0;
-        string memory defs = filtered
-            ? string.concat(
-                '<defs><filter id="c" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">', fx,
-                '<feMerge><feMergeNode in="SourceGraphic"/>', merge, "</feMerge></filter></defs>"
-            )
-            : "";
+        string memory defs = string.concat("<defs>", _image(f));
+        if (filtered) {
+            defs = string.concat(defs, '<filter id="c" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">', fx,
+                '<feMerge><feMergeNode in="SourceGraphic"/>', merge, "</feMerge></filter>");
+        }
+        if (shorts != 0) {
+            defs = string.concat(defs, '<filter id="d" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">',
+                _part(FX + 2), _part(TINT_SHORTS + shorts), _part(FX + 5),
+                '<feMerge><feMergeNode in="shortsc"/></feMerge></filter><clipPath id="k"><rect y="175" width="240" height="120"/></clipPath>');
+        }
         return string.concat(
-            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">', defs,
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">', defs, "</defs>",
             _part(BG_SVG + ((v >> 15) & 15)),
-            '<g transform="translate(60 30) scale(2)">', _pepe(f, filtered), _extra((v >> 19) & 15, f), "</g></svg>"
+            '<g transform="translate(60 30) scale(2)">', _shadow(f), filtered ? '<use href="#p" filter="url(#c)"/>' : '<use href="#p"/>',
+            shorts != 0 ? '<use href="#p" filter="url(#d)" clip-path="url(#k)"/>' : "", _extra((v >> 19) & 15, f), "</g></svg>"
         );
     }
 
@@ -234,8 +238,9 @@ contract ImdPepeArt {
         Frame memory f = _frame(14);
         return string.concat(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600"><defs><filter id="s">',
-            '<feColorMatrix type="matrix" values="0 0 0 0 .08 0 0 0 0 .1 0 0 0 0 .08 0 0 0 .92 0"/></filter></defs>',
-            _part(BG_SVG), '<g transform="translate(60 30) scale(2)" filter="url(#s)">', _pepe(f, false), "</g>",
+            '<feColorMatrix type="matrix" values="0 0 0 0 .08 0 0 0 0 .1 0 0 0 0 .08 0 0 0 .92 0"/></filter>',
+            _image(f), "</defs>", _part(BG_SVG), '<g transform="translate(60 30) scale(2)" filter="url(#s)">', _shadow(f),
+            '<use href="#p"/></g>',
             '<text x="300" y="150" text-anchor="middle" font-family="monospace" font-size="130" font-weight="700" fill="#3ddc84">?</text></svg>'
         );
     }
