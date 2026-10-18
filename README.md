@@ -1,5 +1,8 @@
 # Pepes Family
 
+**Live on Robinhood Chain since 2026-10-18:** [`0xC105792e11A60Bd8F461E6e5094E18594574AABe`](https://robinhoodchain.blockscout.com/address/0xC105792e11A60Bd8F461E6e5094E18594574AABe)
+(the collection; every address is in [`deployments/chain-4663.json`](deployments/chain-4663.json)). The mint is open.
+
 **Launch page:** open `index.html` from this repo's website (GitHub Pages) in the browser that has your wallet extension.
 
 ![Pepes Family, as the chain draws them](preview.png)
