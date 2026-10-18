@@ -3,9 +3,8 @@ pragma solidity ^0.8.26;
 
 import {MiniTest} from "./utils/MiniTest.sol";
 import {PepesFamily} from "../src/PepesFamily.sol";
-import {FrogCraftArt, IFrogCraftSpecs} from "../src/FrogCraftArt.sol";
-import {FrogCraftArtData} from "../src/FrogCraftArtData.sol";
-import {FrogCraftSpecs} from "../src/FrogCraftSpecs.sol";
+import {ImdPepeArt} from "../src/ImdPepeArt.sol";
+import {ImdArt} from "./utils/ImdArt.sol";
 import {DevTransferValidator} from "../script/DevTransferValidator.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -23,13 +22,13 @@ contract PepesFamilyTest is MiniTest {
     uint256 constant PRICE = 0.00025 ether;
 
     PepesFamily pepes;
-    FrogCraftArt art;
+    ImdPepeArt art;
     DevTransferValidator validator;
     address alice = address(0xA11CE);
     address bob = address(0xB0B);
 
     function setUp() public {
-        art = new FrogCraftArt(IFrogCraftSpecs(address(new FrogCraftSpecs())), address(new FrogCraftArtData()));
+        art = ImdArt.deploy();
         validator = new DevTransferValidator();
         pepes = new PepesFamily(OWNER, OWNER, PRICE, keccak256(abi.encode(SECRET)), address(validator), art);
         vm.deal(alice, 10 ether);
@@ -179,7 +178,8 @@ contract PepesFamilyTest is MiniTest {
         string memory attrs = art.attributes(pepes.traitSetOf(1));
         assertTrue(contains(attrs, '"trait_type":"Background"'), "background trait");
         assertTrue(startsWith(art.render(pepes.traitSetOf(1)), "<svg"), "svg");
-        assertEq(pepes.skinPixels(1).length, 16384, "skin");
+        assertTrue(contains(art.render(pepes.traitSetOf(1)), "data:image/webp;base64,UklGR"), "IMD's Pepe, as WebP");
+        assertTrue(contains(art.sealedSvg(), "data:image/webp;base64,UklGR"), "sealed picture");
     }
 
     function test_OwnerUpdatesTheLinksAnyTime() public {
@@ -277,5 +277,45 @@ contract PepesFamilyTest is MiniTest {
             assertTrue(contains(art.attributes(i), '"trait_type":"1/1"'), "1/1");
         }
         assertTrue(!contains(art.attributes(4), '"trait_type":"1/1"'), "not a 1/1");
+    }
+
+    /// Every trait set is different (the 1/1 bits aside), and every pose, colour, background and extra is used.
+    function test_TraitSetsAreUniqueAndCoverEveryTrait() public {
+        uint256[6] memory seen;
+        for (uint256 i; i < 3333; ++i) {
+            uint256 v = art.specOf(i);
+            uint256 k = v & 0x7fffff;
+            assertTrue(!_used[k], "duplicate trait set");
+            _used[k] = true;
+            seen[0] |= 1 << (v & 31);
+            seen[1] |= 1 << ((v >> 5) & 7);
+            seen[2] |= 1 << ((v >> 8) & 15);
+            seen[3] |= 1 << ((v >> 12) & 7);
+            seen[4] |= 1 << ((v >> 15) & 15);
+            seen[5] |= 1 << ((v >> 19) & 15);
+            assertTrue((v & 31) < 19, "pose in range");
+        }
+        assertEq(seen[0], (1 << 19) - 1, "all 19 poses");
+        assertEq(seen[1], (1 << 7) - 1, "all skins");
+        assertEq(seen[2], (1 << 9) - 1, "all shirts");
+        assertEq(seen[3], (1 << 6) - 1, "all shorts");
+        assertEq(seen[4], (1 << 10) - 1, "all backgrounds");
+        assertEq(seen[5], (1 << 8) - 1, "all extras");
+    }
+
+    mapping(uint256 => bool) private _used;
+
+    /// One picture per pose (the first trait set with it) renders, with the IMD frame and well-formed attributes.
+    function test_EveryPoseRenders() public view {
+        uint256 found;
+        for (uint256 i; i < 3333 && found != (1 << 19) - 1; ++i) {
+            uint256 pose = art.specOf(i) & 31;
+            if (found & (1 << pose) != 0) continue;
+            found |= 1 << pose;
+            string memory svg = art.render(i);
+            assertTrue(startsWith(svg, "<svg"), "svg");
+            assertTrue(contains(svg, "</svg>"), "closed");
+            assertTrue(contains(art.attributes(i), '"trait_type":"Pose"'), "pose trait");
+        }
     }
 }

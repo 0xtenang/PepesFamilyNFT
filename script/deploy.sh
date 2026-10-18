@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Deploys PEPES FAMILY on Robinhood Chain (chain 4663): FrogCraftSpecs (the 3,333 trait sets), FrogCraftArtData (the
-# art's bytes), FrogCraftArt (paints every frog and writes its picture), then PepesFamily (the NFT), all fully on chain.
+# Deploys PEPES FAMILY on Robinhood Chain (chain 4663): ImdPepeSpecs (the 3,333 trait sets), ImdPepeParts (the text
+# the pictures are made of), ImdPepeData0-6 (IMD's Pepe frames), ImdPepeArt (draws every picture), then PepesFamily
+# (the NFT), all fully on chain.
 #
 #   ./script/deploy.sh --browser                      # dry run: checks everything, sends nothing
 #   ./script/deploy.sh --broadcast --browser          # deploys: open http://127.0.0.1:9545, connect the OWNER wallet
@@ -56,15 +57,16 @@ else
   DEPLOYER=$(cast wallet address --account "$ACCOUNT")
   VALIDATOR_IS_DEV=0
 fi
-if [ "${DEPLOYER,,}" != "${OWNER,,}" ]; then
+lc() { printf %s "$1" | tr 'A-F' 'a-f'; } # (macOS ships bash 3.2, without ${var,,})
+if [ "$(lc "$DEPLOYER")" != "$(lc "$OWNER")" ]; then
   echo "The signing wallet is $DEPLOYER, not OWNER $OWNER: deploy from the OWNER wallet (OpenSea Studio)."
   exit 1
 fi
 echo "Chain $CHAIN, deployer = owner $OWNER, treasury (mint money + 5% royalty) $TREASURY"
-echo "Price $PRICE_WEI wei ($(cast from-wei "$PRICE_WEI") ETH) a frog, 3 a wallet; owner balance $(cast from-wei "$(cast balance "$OWNER" --rpc-url "$RPC_URL")") ETH"
+echo "Price $PRICE_WEI wei ($(cast from-wei "$PRICE_WEI") ETH) a Pepe, 3 a wallet; owner balance $(cast from-wei "$(cast balance "$OWNER" --rpc-url "$RPC_URL")") ETH"
 
 forge build -q
-python3 tools/gen_art.py --check >/dev/null 2>&1 || echo "(note: tools/gen_art.py --check could not confirm the art is current)"
+python3 tools/gen_imd_art.py --check || { echo "The art contracts are out of date: run python3 tools/gen_imd_art.py"; exit 1; }
 
 if [ "$BROADCAST" = 0 ]; then
   echo "Dry run OK. Run again with --broadcast to deploy."
@@ -86,21 +88,25 @@ create() { # name, constructor args...  (prints the address; the deploying walle
   local args=()
   [ $# -gt 0 ] && args=(--constructor-args "$@")
   [ "$BROWSER" = 1 ] && echo ">> Approve the $name deploy at http://127.0.0.1:$PORT (owner wallet, Robinhood Chain)" >&2
-  forge create "$src/$name.sol:$name" --rpc-url "$RPC_URL" "${SIGN[@]}" --broadcast --json "${args[@]}" > "$TMPD/out.json"
+  forge create "$src/$name.sol:$name" --rpc-url "$RPC_URL" "${SIGN[@]}" --broadcast --json ${args[@]+"${args[@]}"} > "$TMPD/out.json"
   python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["deployer"])' "$TMPD/out.json" > "$TMPD/deployer"
   python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["deployedTo"])' "$TMPD/out.json"
 }
 
 if [ "$VALIDATOR_IS_DEV" = 1 ]; then VALIDATOR=$(create DevTransferValidator); fi
-SPECS=$(create FrogCraftSpecs);              echo "FrogCraftSpecs   $SPECS"
+SPECS=$(create ImdPepeSpecs);                echo "ImdPepeSpecs     $SPECS"
 # The wallet that signs must be the owner (OpenSea Studio): checked before anything else is deployed.
-if [ "$(tr 'A-F' 'a-f' < "$TMPD/deployer")" != "${OWNER,,}" ]; then
-  echo "The connected wallet is $(cat "$TMPD/deployer"), not the owner $OWNER: stopping (only FrogCraftSpecs, a data"
+if [ "$(tr 'A-F' 'a-f' < "$TMPD/deployer")" != "$(lc "$OWNER")" ]; then
+  echo "The connected wallet is $(cat "$TMPD/deployer"), not the owner $OWNER: stopping (only ImdPepeSpecs, a data"
   echo "contract, was deployed). Connect the owner wallet and run again."
   exit 1
 fi
-DATA=$(create FrogCraftArtData);             echo "FrogCraftArtData $DATA"
-ART=$(create FrogCraftArt "$SPECS" "$DATA"); echo "FrogCraftArt     $ART"
+PARTS=$(create ImdPepeParts);                echo "ImdPepeParts     $PARTS"
+DATA=()
+for i in $(seq 0 $(( $(ls src/ImdPepeData*.sol | wc -l) - 1 ))); do
+  DATA+=("$(create "ImdPepeData$i")");       echo "ImdPepeData$i     ${DATA[$i]}"
+done
+ART=$(create ImdPepeArt "$SPECS" "$PARTS" "${DATA[@]}"); echo "ImdPepeArt       $ART"
 PEPES=$(create PepesFamily "$OWNER" "$TREASURY" "$PRICE_WEI" "$COMMIT" "$VALIDATOR" "$ART")
 echo "PepesFamily      $PEPES   <- the collection"
 
@@ -117,7 +123,8 @@ cat > "deployments/chain-$CHAIN.json" <<EOF
   "chainId": $CHAIN,
   "pepesFamily": "$PEPES",
   "art": "$ART",
-  "artData": "$DATA",
+  "parts": "$PARTS",
+  "frames": [$(printf '"%s",' "${DATA[@]}" | sed 's/,$//')],
   "specs": "$SPECS",
   "owner": "$OWNER",
   "treasury": "$TREASURY",

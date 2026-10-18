@@ -92,12 +92,12 @@ pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8
 <main>
   <header>
     <h1>PEPES <span>FAMILY</span> launch</h1>
-    <p class="sub">Deploy the collection on Robinhood Chain from your wallet: four contracts, then open the mint. Every frog's
+    <p class="sub">Deploy the collection on Robinhood Chain from your wallet: 11 contracts, then open the mint. Every Pepe's
       picture and traits live in these contracts, so nothing else needs hosting.</p>
   </header>
 
   <dl class="facts">
-    <div><dt>Supply</dt><dd>3,333 frogs</dd></div>
+    <div><dt>Supply</dt><dd>3,333 Pepes</dd></div>
     <div><dt>Ticker</dt><dd>PEPES</dd></div>
     <div><dt>Royalty</dt><dd>5%, enforced</dd></div>
     <div><dt>Wallet limit</dt><dd>3 per wallet</dd></div>
@@ -120,8 +120,8 @@ pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8
 
   <section class="step" id="s3" data-state="locked">
     <div class="step-head"><span class="num">3</span><h2>Save the reveal secret</h2><span class="pill" id="s3pill">Not saved</span></div>
-    <p class="note">The frogs mint sealed. After the mint you reveal them with this number. Only its fingerprint goes on chain now.
-      <strong>Without it the frogs can never be revealed.</strong> Copy it into your password manager.</p>
+    <p class="note">The Pepes mint sealed. After the mint you reveal them with this number. Only its fingerprint goes on chain now.
+      <strong>Without it the Pepes can never be revealed.</strong> Copy it into your password manager.</p>
     <div class="secret" id="secret"></div>
     <div class="row"><button id="copySecret">Copy secret</button><span class="note" id="copyMsg"></span></div>
     <label for="secretCheck">Paste it back to confirm you saved it
@@ -129,9 +129,9 @@ pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8
   </section>
 
   <section class="step" id="s4" data-state="locked">
-    <div class="step-head"><span class="num">4</span><h2>Deploy the contracts</h2><span class="pill" id="s4pill">0 of 4</span></div>
+    <div class="step-head"><span class="num">4</span><h2>Deploy the contracts</h2><span class="pill" id="s4pill">0 of 11</span></div>
     <div class="row">
-      <label for="price">Mint price (ETH a frog)<input id="price" value="0.0004" inputmode="decimal"></label>
+      <label for="price">Mint price (ETH a Pepe)<input id="price" value="0.0004" inputmode="decimal"></label>
     </div>
     <p class="note">0.0004 ETH is about $1 with ETH near $2,450. You can change it any time after deploying.
       Your wallet asks you to approve four transactions, one after another.</p>
@@ -163,7 +163,7 @@ pre.json { font: 12px/1.5 var(--mono); background: var(--soft); border-radius: 8
     <p class="note">Announce the time first. This closes the mint for good, publishes the secret, then seals the seed: approve
       the last transaction quickly, it has about 26 seconds.</p>
     <label for="revealSecret">Reveal secret<input id="revealSecret" autocomplete="off" spellcheck="false"></label>
-    <div class="row"><button id="reveal" disabled>Reveal the frogs</button></div>
+    <div class="row"><button id="reveal" disabled>Reveal the Pepes</button></div>
   </section>
 
   <section class="step" id="s7">
@@ -190,10 +190,12 @@ const PEPES_ABI = [
   "function setLinks(string,string)", "function setSaleOpen(bool)", "function setPrice(uint256)", "function reveal(uint256)",
   "function seal() returns (uint256)", "function seedCommit() view returns (bytes32)",
 ];
+const FRAME_PARTS = Object.keys(CODE).filter((k) => /^data\d+$/.test(k)).sort((a, b) => a.slice(4) - b.slice(4));
 const PARTS = [
-  { key: "specs", label: "Trait sets (FrogCraftSpecs)" },
-  { key: "data", label: "Art data (FrogCraftArtData)" },
-  { key: "art", label: "Art (FrogCraftArt)" },
+  { key: "specs", label: "Trait sets (ImdPepeSpecs)" },
+  { key: "parts", label: "Picture parts (ImdPepeParts)" },
+  ...FRAME_PARTS.map((k) => ({ key: k, label: `IMD's Pepe frames, part ${Number(k.slice(4)) + 1} of ${FRAME_PARTS.length} (ImdPepeData${k.slice(4)})` })),
+  { key: "art", label: "Art (ImdPepeArt)" },
   { key: "pepes", label: "PEPES FAMILY" },
 ];
 const $ = (id) => document.getElementById(id);
@@ -323,8 +325,10 @@ $("deploy").addEventListener("click", async () => {
   try {
     const enc = E.AbiCoder.defaultAbiCoder();
     const specs = await deployPart("specs");
-    const data = await deployPart("data");
-    const art = await deployPart("art", enc.encode(["address", "address"], [specs, data]));
+    const parts = await deployPart("parts");
+    const frames = [];
+    for (const k of FRAME_PARTS) frames.push(await deployPart(k));
+    const art = await deployPart("art", enc.encode(["address", "address", ...frames.map(() => "address")], [specs, parts, ...frames]));
     let validator = VALIDATOR;
     if (LOCAL_TEST && !(await hasCode(VALIDATOR))) validator = await deployPart("validator");
     await deployPart("pepes", enc.encode(["address", "address", "uint256", "bytes32", "address", "address"],
@@ -376,7 +380,7 @@ $("reveal").addEventListener("click", async () => {
     log("Waiting for the next block, then sealing: approve the seal quickly.");
     for (let i = 0; i < 600; i++) {
       const s = Number(await c.revealStatus());
-      if (s === 4) { log("Revealed. Every frog's look is now on chain."); break; }
+      if (s === 4) { log("Revealed. Every Pepe's look is now on chain."); break; }
       if (s === 3 || s === 5) { log("The sealing window passed. The owner can call moveEntropyOn() on the contract, then seal again."); break; }
       if (s === 2) { try { await (await c.seal()).wait(); } catch (e) { log("Seal: " + errText(e)); } continue; }
       await new Promise((r) => setTimeout(r, 400));
@@ -429,7 +433,7 @@ function render() {
   const done = PARTS.filter((p) => st.addr[p.key]).length;
   const deployed = !!chainState.deployed;
   setStep("s4", !(ready2 && st.secretOk) && !deployed ? "locked" : deployed ? "done" : null);
-  setPill("s4pill", `${done} of 4`, deployed ? "ok" : done ? "warn" : "");
+  setPill("s4pill", `${done} of ${PARTS.length}`, deployed ? "ok" : done ? "warn" : "");
   $("contracts").innerHTML = PARTS.map((p) => `<div><span>${p.label}</span><span class="mono">${st.addr[p.key] || "not yet"}</span></div>`).join("");
   $("deploy").disabled = !(ready2 && st.secretOk) || st.busy || deployed;
   $("deploy").textContent = deployed ? "Deployed" : done ? "Continue deploying" : "Deploy";

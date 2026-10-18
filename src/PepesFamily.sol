@@ -6,7 +6,7 @@ import {ERC2981} from "@openzeppelin/contracts/token/common/ERC2981.sol";
 import {Ownable, Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
-import {FrogCraftArt} from "./FrogCraftArt.sol";
+import {ImdPepeArt} from "./ImdPepeArt.sol";
 import {FastBase64} from "./lib/FastBase64.sol";
 
 /// @notice The creator token standard (ERC721-C) that marketplaces read to find a collection's transfer rules.
@@ -33,9 +33,9 @@ interface IArbSys {
 }
 
 /// @title PepesFamily: the PEPES FAMILY collection
-/// @notice PEPES FAMILY (symbol PEPES): 3,333 blocky frogs, each a full Minecraft-style skin (64 x 64, with its second
-///         layer), drawn and stored entirely on chain: FrogCraftArt paints the skin and writes the NFT's picture from
-///         it, from one of the 3,333 trait sets in FrogCraftSpecs (no two alike; four of them 1/1s). Minted blind,
+/// @notice PEPES FAMILY (symbol PEPES): 3,333 Pepes drawn from IMD's own Pepe (imd.fun), stored and drawn entirely
+///         on chain: ImdPepeArt writes each NFT's picture (IMD's art in one of 19 poses, recoloured, with a background
+///         and maybe a hat) from one of the 3,333 trait sets in ImdPepeSpecs (no two alike; four of them 1/1s). Minted blind,
 ///         then revealed: a keyed shuffle of the token ids, from a seed nobody can know before everyone can, decides
 ///         which token gets which trait set.
 ///
@@ -98,13 +98,13 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         Stuck
     }
 
-    /// @notice Draws every frog (fixed for good).
-    FrogCraftArt public immutable art;
+    /// @notice Draws every Pepe (fixed for good).
+    ImdPepeArt public immutable art;
     bytes32 public immutable seedCommit;
 
-    /// @notice Per frog, in wei (0: free).
+    /// @notice Per Pepe, in wei (0: free).
     uint256 public price;
-    /// @notice How many frogs one wallet can mint in all (the owner can change it, 1 to MAX_WALLET_LIMIT).
+    /// @notice How many Pepes one wallet can mint in all (the owner can change it, 1 to MAX_WALLET_LIMIT).
     uint256 public walletLimit = 3;
     bool public saleOpen;
     /// @notice The secret committed at deploy (`seedCommit`), public from `reveal` on.
@@ -114,7 +114,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
     /// @notice How many times the owner has moved the entropy block on (at most MAX_ENTROPY_MOVES).
     uint256 public entropyMoves;
     uint256 public totalMinted;
-    /// @notice How many frogs each wallet has minted (transfers don't change it).
+    /// @notice How many Pepes each wallet has minted (transfers don't change it).
     mapping(address => uint256) public mintedBy;
     address public treasury;
 
@@ -128,13 +128,13 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
     /// @notice The collection's picture and banner on marketplaces (URLs: OpenSea doesn't take data: URIs for these).
     string public collectionImage;
     string public bannerImage;
-    /// @notice The collection's description (and every frog's), changeable by the owner.
+    /// @notice The collection's description (and every Pepe's), changeable by the owner.
     string public description =
-        "3,333 blocky frogs on Robinhood Chain. Every PEPE is a full Minecraft-style skin, drawn and stored entirely on chain, and no two look alike.";
+        "3,333 Pepes on Robinhood Chain, drawn from IMD's own Pepe. Every picture is stored and drawn entirely on chain, and no two look alike.";
     /// @dev Replaces the built-in collection metadata when set (see contractURI).
     string private customContractURI;
 
-    /// @notice The seed is set (by `seal`): every frog's look is fixed and public.
+    /// @notice The seed is set (by `seal`): every Pepe's look is fixed and public.
     event Revealed(uint256 seed);
     event SaleOpen(bool open);
     /// @notice The owner published the secret; the hash of chain block `entropyBlock` (not yet made) completes the seed.
@@ -196,7 +196,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         uint256 price_,
         bytes32 seedCommit_,
         address validator_,
-        FrogCraftArt art_
+        ImdPepeArt art_
     ) ERC721("PEPES FAMILY", "PEPES") Ownable(owner_) {
         _checkTreasury(treasury_);
         if (address(art_).code.length == 0) revert NotAContract();
@@ -210,7 +210,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
 
     // ---------------------------------------------------------------- mint
 
-    /// @notice Mint `quantity` sealed frogs (1 to MAX_PER_TX), paying exactly `price` each (nothing while free).
+    /// @notice Mint `quantity` sealed Pepes (1 to MAX_PER_TX), paying exactly `price` each (nothing while free).
     ///         Wallets only: the caller must be the transaction's sender (msg.sender == tx.origin, else `OnlyWallets`),
     ///         so no contract mints, and one transaction can't sweep the mint through throwaway contracts. An account
     ///         delegated with EIP-7702 still mints as itself, within the same limit per address. Smart-contract wallets
@@ -314,17 +314,12 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         if (h == 0) revert EntropyUnavailable();
     }
 
-    /// @notice Which of the 3,333 trait sets (FrogCraftArt / FrogCraftSpecs index) token `tokenId` has, once
+    /// @notice Which of the 3,333 trait sets (ImdPepeArt / ImdPepeSpecs index) token `tokenId` has, once
     ///         revealed. Every token has a different one.
     function traitSetOf(uint256 tokenId) public view returns (uint256) {
         if (seed == 0) revert NotRevealed();
         _requireOwned(tokenId);
         return _shuffle(seed, tokenId - 1);
-    }
-
-    /// @notice Token `tokenId`'s skin as RGBA bytes (64 x 64 x 4, row by row), once revealed: wear it in a game.
-    function skinPixels(uint256 tokenId) external view returns (bytes memory) {
-        return art.skinPixels(traitSetOf(tokenId));
     }
 
     /// @dev A keyed shuffle of 0..MAX_SUPPLY-1: a 4-round Feistel network on 12 bits (a permutation of 0..4095),
@@ -351,7 +346,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
 
     // ---------------------------------------------------------------- metadata
 
-    /// @notice Metadata and picture, all on chain: the card FrogCraftArt draws from the frog's skin (an SVG), and its
+    /// @notice Metadata and picture, all on chain: the picture ImdPepeArt draws (an SVG), and its
     ///         traits as attributes.
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         _requireOwned(tokenId);
@@ -405,7 +400,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         return string.concat("data:application/json;base64,", FastBase64.encode(bytes(json)));
     }
 
-    /// @notice Every frog `owner` holds, without scanning event logs.
+    /// @notice Every Pepe `owner` holds, without scanning event logs.
     function tokensOfOwner(address owner) external view returns (uint256[] memory ids) {
         uint256 n = balanceOf(owner);
         ids = new uint256[](n);
@@ -457,14 +452,14 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         emit SaleOpen(open);
     }
 
-    /// @notice The price of one frog in wei; 0 makes the mint free. (Priced in ETH: to keep it near $1, set it again
+    /// @notice The price of one Pepe in wei; 0 makes the mint free. (Priced in ETH: to keep it near $1, set it again
     ///         when ETH's price moves.)
     function setPrice(uint256 price_) external onlyOwner {
         price = price_;
         emit PriceSet(price_);
     }
 
-    /// @notice How many frogs one wallet can mint in all (1 to MAX_WALLET_LIMIT).
+    /// @notice How many Pepes one wallet can mint in all (1 to MAX_WALLET_LIMIT).
     function setWalletLimit(uint256 limit) external onlyOwner {
         if (limit == 0 || limit > MAX_WALLET_LIMIT) revert BadWalletLimit();
         walletLimit = limit;
@@ -490,7 +485,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         if (!ok) revert TreasuryRefusesEth();
     }
 
-    /// @notice The project's website (the collection's link on marketplaces, and each frog's external_url) and its X
+    /// @notice The project's website (the collection's link on marketplaces, and each Pepe's external_url) and its X
     ///         link (in the collection's description), at any time; "" leaves one out. Plain URLs only: no quotes,
     ///         backslashes or control characters, at most MAX_LINK bytes.
     function setLinks(string calldata website_, string calldata xLink_) external onlyOwner {
@@ -514,7 +509,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         emit ContractURIUpdated();
     }
 
-    /// @notice The collection's description (also each revealed frog's), at any time: at most MAX_DESCRIPTION bytes,
+    /// @notice The collection's description (also each revealed Pepe's), at any time: at most MAX_DESCRIPTION bytes,
     ///         no quotes, backslashes or control characters.
     function setDescription(string calldata description_) external onlyOwner {
         _checkText(description_, MAX_DESCRIPTION);
@@ -533,7 +528,7 @@ contract PepesFamily is ERC721, ERC2981, Ownable2Step, ICreatorToken {
         }
     }
 
-    /// @notice Ask marketplaces to re-read frogs `fromTokenId` to `toTokenId` (ERC-4906). The owner only.
+    /// @notice Ask marketplaces to re-read Pepes `fromTokenId` to `toTokenId` (ERC-4906). The owner only.
     function refreshMetadata(uint256 fromTokenId, uint256 toTokenId) external onlyOwner {
         if (toTokenId > totalMinted) toTokenId = totalMinted;
         if (fromTokenId == 0) fromTokenId = 1;

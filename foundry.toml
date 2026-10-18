@@ -9,7 +9,7 @@ optimizer_runs = 200
 via_ir = true
 bytecode_hash = "none"
 remappings = ["@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/"]
-fs_permissions = [{ access = "read", path = "./build" }, { access = "read-write", path = "./deployments" }]
+fs_permissions = [{ access = "read", path = "./build" }, { access = "read-write", path = "./build/preview" }, { access = "read-write", path = "./deployments" }]
 
 [rpc_endpoints]
 robinhood = "https://rpc.mainnet.chain.robinhood.com"
