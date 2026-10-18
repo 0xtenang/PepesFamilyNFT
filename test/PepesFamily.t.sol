@@ -318,4 +318,23 @@ contract PepesFamilyTest is MiniTest {
             assertTrue(contains(art.attributes(i), '"trait_type":"Pose"'), "pose trait");
         }
     }
+
+    /// Every extra renders with whole transforms (as many "(" as ")"; a missing one moves it off the Pepe).
+    function test_EveryExtraRenders() public view {
+        uint256 found;
+        for (uint256 i; i < 3333 && found != (1 << 8) - 1; ++i) {
+            uint256 e = (art.specOf(i) >> 19) & 15;
+            if (found & (1 << e) != 0) continue;
+            found |= 1 << e;
+            bytes memory svg = bytes(art.render(i));
+            uint256 open;
+            uint256 close;
+            for (uint256 k; k < svg.length; ++k) {
+                if (svg[k] == "(") ++open;
+                else if (svg[k] == ")") ++close;
+            }
+            assertEq(open, close, "brackets");
+        }
+        assertEq(found, (1 << 8) - 1, "all extras");
+    }
 }

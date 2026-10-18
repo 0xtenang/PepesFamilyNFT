@@ -11,23 +11,25 @@ th { font-weight: 400; text-align: left; padding: 2px 4px; }
 <table id="t"></table>
 <script>
 // Tuning page for the extras: every frame of IMD's Pepe with every extra, as tools/gen_imd_art.py places them
-// (art/imd/extras.json, which it writes). Edit HAT, EYES or the designs in the generator, run it, reload this page.
+// (art/imd/extras.json, which it writes). Edit HAT, EYES, PACK or the designs in the generator, run it, reload this page.
 // Serve the repo root (python3 -m http.server) and open /tools/imd/tune.html.
 const VIEWS = ["back", "back", "back", "back", "back", "back", "back", "side", "side", "side", "side", "side", "side", "front", "front", "front", "front", "back", "back"];
-const NAMES = ["cap", "beanie", "headphones", "party", "halo", "crown", "shades"];
+const NAMES = ["Swarm Backpack", "Black Backpack", "Red Backpack", "Gold Backpack", "Headphones", "Halo", "Shades"];
 (async () => {
   const frames = await (await fetch("../../art/imd/frames.json")).json();
   const T = await (await fetch("../../art/imd/extras.json")).json();
   let html = "<tr><th></th>" + NAMES.map((n) => `<th>${n}</th>`).join("") + "</tr>";
   for (let i = 0; i < frames.length; i++) {
-    const f = frames[i], v = VIEWS[i], [hx, hy, hs, hr] = T.hat[i], e = T.eyes[i];
+    const f = frames[i], v = VIEWS[i], [hx, hy, hs, hr] = T.hat[i], e = T.eyes[i], [px, py, ps] = T.pack[i];
     html += `<tr><th>${i}<br>${v}</th>`;
     for (const n of NAMES) {
-      const d = (T.extras[n] || {})[v];
-      let g = "";
-      if (n === "shades") { if (e && d) g = `<g transform="translate(${e[0]} ${e[1]}) scale(${e[2] / 100})" ${T.line}>${d}</g>`; }
-      else if (d) g = `<g transform="translate(${hx} ${hy}) rotate(${hr}) scale(${hs / 100})" ${T.line}>${d}</g>`;
-      html += `<td><svg width="108" height="108" viewBox="30 0 180 180"><image href="../../art/imd/frame${String(i).padStart(2, "0")}.webp" x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}"/>${g}</svg></td>`;
+      const d = (T.extras[n] || {})[v] || ["", ""];
+      let at = "";
+      if (T.color[n]) at = `translate(${px} ${py}) scale(${ps / 100})" color="${T.color[n]}`;
+      else if (n === "Shades") at = e ? `translate(${e[0]} ${e[1]}) scale(${e[2] / 100})` : "";
+      else at = `translate(${hx} ${hy}) rotate(${hr}) scale(${hs / 100})`;
+      const layer = (k) => (at && d[k] ? `<g transform="${at}" ${T.line}>${d[k]}</g>` : "");
+      html += `<td><svg width="120" height="120" viewBox="30 40 180 240">${layer(0)}<image href="../../art/imd/frame${String(i).padStart(2, "0")}.webp" x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}"/>${layer(1)}</svg></td>`;
     }
     html += "</tr>";
   }

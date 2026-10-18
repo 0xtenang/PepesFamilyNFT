@@ -13,19 +13,19 @@ interface IImdPepeSpecs {
 /// @title ImdPepeArt
 /// @notice Draws every PEPES FAMILY picture on chain from IMD's own Pepe (imd.fun's sprite sheet: 19 frames, stored
 ///         in the ImdPepeData contracts): a background, the Pepe in its pose with its skin, shirt and shorts
-///         recoloured by SVG filters (colour-keyed masks keep IMD's lines and shading), a shadow, and maybe a hat or
-///         shades. Also lists the traits. Holds no state and has no owner.
+///         recoloured by SVG filters (colour-keyed masks keep IMD's lines and shading), a shadow, and maybe a backpack,
+///         headphones, a halo or shades. Also lists the traits. Holds no state and has no owner.
 contract ImdPepeArt {
     using Strings for uint256;
 
     uint256 public constant SUPPLY = @SUPPLY@;
     uint256 public constant FRAMES = @FRAMES@;
-    /// @dev Per frame, 18 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
-    ///      where a hat goes (x, y, scale %, tilt + 128 degrees), the eyes (x, y, scale %; 0: no face), facing (0 back,
-    ///      1 side, 2 front).
+    /// @dev Per frame, 21 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
+    ///      where head extras go (x, y, scale %, tilt + 128 degrees), the eyes (x, y, scale %; 0: no face), facing (0
+    ///      back, 1 side, 2 front), where a backpack goes (torso x, y, scale %).
     bytes private constant FRAME_TABLE =
 @FRAME_TABLE@;
-    /// @dev Where each piece of text starts in ImdPepeParts (2 bytes each; the next start is its end).
+    /// @dev Where each piece of text starts and ends in ImdPepeParts (2 + 2 bytes each).
     bytes private constant PART_INDEX =
 @PART_INDEX@;
     uint256 private constant POSE = @G_POSE@;
@@ -41,7 +41,10 @@ contract ImdPepeArt {
     uint256 private constant BG_SVG = @G_BGSVG@;
     uint256 private constant EXTRA_SVG = @G_EXTRASVG@;
     uint256 private constant FX = @G_FX@;
+    uint256 private constant EXTRA_COLOR = @G_EXTRACOLOR@;
     uint256 private constant SHADES = @SHADES@;
+    /// @dev The extras worn on the body (the backpacks), one bit each.
+    uint256 private constant BODY = @BODY@;
 
     IImdPepeSpecs public immutable specs;
     address public immutable parts;
@@ -72,6 +75,9 @@ contract ImdPepeArt {
         uint256 eyesY;
         uint256 eyesS;
         uint256 facing;
+        uint256 packX;
+        uint256 packY;
+        uint256 packS;
     }
 
     // ---------------------------------------------------------------- reading
@@ -88,7 +94,7 @@ contract ImdPepeArt {
         uint256 a;
         uint256 b;
         assembly ("memory-safe") {
-            let w := mload(add(add(ix, 32), mul(k, 2)))
+            let w := mload(add(add(ix, 32), mul(k, 4)))
             a := shr(240, w)
             b := and(shr(224, w), 0xffff)
         }
@@ -103,7 +109,7 @@ contract ImdPepeArt {
         bytes memory t = FRAME_TABLE;
         uint256 w;
         assembly ("memory-safe") {
-            w := mload(add(add(t, 32), mul(i, 18)))
+            w := mload(add(add(t, 32), mul(i, 21)))
         }
         f.chunk = w >> 248;
         f.offset = (w >> 232) & 0xffff;
@@ -120,6 +126,9 @@ contract ImdPepeArt {
         f.eyesY = (w >> 128) & 255;
         f.eyesS = (w >> 120) & 255;
         f.facing = (w >> 112) & 255;
+        f.packX = (w >> 104) & 255;
+        f.packY = (w >> 96) & 255;
+        f.packS = (w >> 88) & 255;
     }
 
     /// @dev Frame `f`'s WebP bytes, from its data contract's code.
@@ -166,21 +175,26 @@ contract ImdPepeArt {
         return string.concat('<ellipse cx="', f.hatX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>');
     }
 
-    /// @dev Extra `e` placed on the head as tuned for the frame (hats float just above it, like the halo; headphones
-    ///      wrap it; shades sit on the eyes), in IMD's line style.
-    function _extra(uint256 e, Frame memory f) private view returns (string memory) {
-        if (e == 0) return "";
-        bool shades = e == SHADES;
-        if (shades && f.eyesS == 0) return "";
-        string memory tilt = shades || f.hatR == 128
-            ? ""
-            : string.concat(" rotate(", f.hatR < 128 ? string.concat("-", (128 - f.hatR).toString()) : (f.hatR - 128).toString(), ")");
-        return string.concat(
-            '<g transform="translate(', (shades ? f.eyesX : f.hatX).toString(), " ", (shades ? f.eyesY : f.hatY).toString(), ")",
-            tilt, " scale(", _dec(shades ? f.eyesS : f.hatS),
-            ')" stroke="#1c1c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">',
-            _part(EXTRA_SVG + e * 3 + f.facing), "</g>"
-        );
+    /// @dev Layer `layer` (0: behind the Pepe, 1: over it) of extra `e`, placed as tuned for the frame: backpacks on
+    ///      the back (in their colour), headphones and the halo around the head, shades on the eyes; in IMD's line style.
+    function _extra(uint256 e, Frame memory f, uint256 layer) private view returns (string memory) {
+        string memory art = _part(EXTRA_SVG + (e * 3 + f.facing) * 2 + layer);
+        if (bytes(art).length == 0) return "";
+        string memory at;
+        if ((BODY >> e) & 1 == 1) {
+            at = string.concat(f.packX.toString(), " ", f.packY.toString(), ") scale(", _dec(f.packS), ')" color="',
+                _part(EXTRA_COLOR + e));
+        } else if (e == SHADES) {
+            if (f.eyesS == 0) return "";
+            at = string.concat(f.eyesX.toString(), " ", f.eyesY.toString(), ") scale(", _dec(f.eyesS), ")");
+        } else {
+            at = string.concat(f.hatX.toString(), " ", f.hatY.toString(), ")", f.hatR == 128
+                ? ""
+                : string.concat(" rotate(", f.hatR < 128 ? string.concat("-", (128 - f.hatR).toString()) : (f.hatR - 128).toString(), ")"),
+                " scale(", _dec(f.hatS), ")");
+        }
+        return string.concat('<g transform="translate(', at,
+            '" stroke="#1c1c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">', art, "</g>");
     }
 
     /// @dev The picture: the frame, its skin and shirt recoloured by filter "c"; the shorts recoloured by filter "d"
@@ -189,6 +203,7 @@ contract ImdPepeArt {
         Frame memory f = _frame(v & 31);
         (string memory fx, string memory merge) = _filter((v >> 5) & 7, (v >> 8) & 15);
         uint256 shorts = (v >> 12) & 7;
+        uint256 e = (v >> 19) & 15;
         bool filtered = bytes(fx).length != 0;
         string memory defs = string.concat("<defs>", _image(f));
         if (filtered) {
@@ -203,8 +218,8 @@ contract ImdPepeArt {
         return string.concat(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">', defs, "</defs>",
             _part(BG_SVG + ((v >> 15) & 15)),
-            '<g transform="translate(60 30) scale(2)">', _shadow(f), filtered ? '<use href="#p" filter="url(#c)"/>' : '<use href="#p"/>',
-            shorts != 0 ? '<use href="#p" filter="url(#d)" clip-path="url(#k)"/>' : "", _extra((v >> 19) & 15, f), "</g></svg>"
+            '<g transform="translate(60 30) scale(2)">', _shadow(f), _extra(e, f, 0), filtered ? '<use href="#p" filter="url(#c)"/>' : '<use href="#p"/>',
+            shorts != 0 ? '<use href="#p" filter="url(#d)" clip-path="url(#k)"/>' : "", _extra(e, f, 1), "</g></svg>"
         );
     }
 

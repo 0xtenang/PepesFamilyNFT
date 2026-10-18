@@ -40,12 +40,13 @@ SHORTS = [('Tan', None, 50), ('Grey', '6b6b6b', 12), ('Denim', '3d5a80', 12), ('
           ('Red', 'a83232', 8), ('White', 'e8e8e8', 8)]
 BGS = [('IMD Wall', 20), ('Terminal', 12), ('The Floor', 14), ('Paper', 12), ('Mint', 10), ('Sky', 10),
        ('Bubblegum', 8), ('Night', 8), ('Swarm Green', 4), ('Gold', 2)]
-EXTRAS = [('None', 55), ('Cap', 9), ('Beanie', 8), ('Headphones', 8), ('Party Hat', 6), ('Shades', 6),
-          ('Halo', 4), ('Crown', 2)]
+EXTRAS = [('None', 55), ('Swarm Backpack', 9), ('Black Backpack', 8), ('Headphones', 8), ('Red Backpack', 6), ('Shades', 6),
+          ('Halo', 4), ('Gold Backpack', 2)]
 SHADES = 5
+PACK_COLOR = {'Swarm Backpack': '#5eea9c', 'Black Backpack': '#2e2e2e', 'Red Backpack': '#d94040', 'Gold Backpack': '#f2c230'}
 # The four 1/1s: trait sets #1-4 (which tokens get them is decided at the reveal).
 ONE_OF_ONES = [
-    ('Genesis', dict(pose=18, skin=6, shirt=4, shorts=0, bg=0, extra=7)),
+    ('Genesis', dict(pose=18, skin=6, shirt=0, shorts=0, bg=0, extra=1)),
     ('The Swarm', dict(pose=3, skin=0, shirt=2, shorts=3, bg=1, extra=3)),
     ('Golden Pepe', dict(pose=14, skin=6, shirt=0, shorts=0, bg=9, extra=6)),
     ('Night Shift', dict(pose=15, skin=4, shirt=2, shorts=3, bg=7, extra=0)),
@@ -107,50 +108,49 @@ BG_SVG = [WALL + FLOOR, TERMINAL + FLOOR,
           '<rect width="600" height="600" fill="#f5d77a"/>']
 
 # ---------------------------------------------------------------- extras
-# Drawn in IMD's style (thin, round, dark lines; flat colours) around the top of the head (shades: around the eyes),
-# for a 120-wide head, in three views. The contract wraps each in the shared line style (LINE) and places it with the
-# frame's placement below. Tuned by eye on every frame with tools/imd/tune.html.
+# Drawn in IMD's style (thin, round, dark lines; flat colours), in three views (back, side facing right, front), each
+# in two layers: behind the Pepe and over it. Headphones and the halo go around the head (a 120-wide head, placed with
+# HAT below); shades on the eyes (EYES); backpacks on the back (a 128-wide torso, placed with PACK below) and are drawn
+# in currentColor, which the contract sets to the pack's colour. The contract wraps each in the shared line style
+# (LINE). Tuned by eye on every frame with tools/imd/tune.html.
 LINE = 'stroke="#1c1c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"'
-NS = 'stroke="none"'
 
 
 def at(dy, svg):
     return f'<g transform="translate(0 {dy})">{svg}</g>'
 
 
-CAP_DOME = '<path d="M-58 24C-60-6-30-24 0-24C30-24 60-6 58 24C30 18-30 18-58 24Z" fill="#2563eb"/>'
-BEANIE = ('<path d="M-60 26C-62-14-30-32 0-32C30-32 62-14 60 26Z" fill="#ea580c"/>'
-          '<path d="M-62 14C-30 8 30 8 62 14L62 30C30 24-30 24-62 30Z" fill="#c2410c"/>'
-          '<path d="M-40 12v14M-20 10v14M0 9v14M20 10v14M40 12v14" stroke="#9a3412" stroke-width="2"/><circle cy="-35" r="8" fill="#fde68a"/>')
+def strap(d):
+    """A backpack strap along path d: a dark outline and the pack's colour inside."""
+    return f'<path d="{d}" fill="none" stroke-width="10"/><path d="{d}" fill="none" stroke="currentColor" stroke-width="5.5"/>'
+
+
+SHADE = 'fill="#000" fill-opacity=".12" stroke="none"'
+POCKET = '<rect x="-34" y="-10" width="68" height="46" rx="16" fill="currentColor"/><rect x="-34" y="-10" width="68" height="46" rx="16" ' + SHADE + '/>'
+PACK_BACK = ('<rect x="-52" y="-48" width="104" height="92" rx="34" fill="currentColor"/>' + POCKET +
+             '<path d="M-26 2H26" fill="none"/><path d="M-12-48C-12-58 12-58 12-48" fill="none"/>'
+             '<path d="M-38-28C-38-36-32-40-24-40" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3.5"/>')
+PACK_SIDE = ('<rect x="-96" y="-50" width="72" height="92" rx="30" fill="currentColor"/>'
+             '<rect x="-106" y="-6" width="28" height="42" rx="11" fill="currentColor"/><rect x="-106" y="-6" width="28" height="42" rx="11" ' + SHADE + '/>'
+             '<path d="M-82-32C-82-40-76-44-68-44" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3.5"/>')
+PACK_FRONT = '<rect x="-80" y="-50" width="160" height="92" rx="38" fill="currentColor"/>'
+BACKPACK = [('', PACK_BACK),
+            (PACK_SIDE, strap('M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10')),
+            (PACK_FRONT, strap('M-36-40C-40-20-40 0-36 16') + strap('M36-40C40-20 40 0 36 16'))]
 BAND = ('<path d="{d}" fill="none" stroke-width="7"/><path d="{d}" fill="none" stroke="#4b5563" stroke-width="3"/>')
-PARTY = ('<path d="M-18 10L2-54L20 8C8 13-6 13-18 10Z" fill="#a855f7"/><g fill="#fde047" ' + NS + '><circle cx="-2" cy="-14" r="3"/>'
-         '<circle cx="8" cy="-30" r="3"/><circle cx="6" cy="0" r="3"/></g><circle cx="2" cy="-56" r="6" fill="#fde047"/>')
 HALO = '<ellipse cy="-26" rx="40" ry="9" fill="none" stroke-width="7"/><ellipse cy="-26" rx="40" ry="9" fill="none" stroke="#fde047" stroke-width="3.5"/>'
-CROWN = ('<path d="M-32 14L-36-18L-18-4L-2-26L14-4L32-18L30 14C10 10-12 10-32 14Z" fill="#facc15"/><circle cx="-1" cy="4" r="4" fill="#ef4444"/>'
-         '<g fill="#facc15"><circle cx="-36" cy="-19" r="3"/><circle cx="-2" cy="-27" r="3"/><circle cx="32" cy="-19" r="3"/></g>')
 HP_FRONT = (BAND.format(d='M-64 42C-66-22 66-22 64 42') +
             '<ellipse cx="-64" cy="46" rx="10" ry="16" fill="#e11d48"/><ellipse cx="64" cy="46" rx="10" ry="16" fill="#e11d48"/>')
-CAP = (CAP_DOME + '<path d="M0-23C2-6 2 8 0 19" fill="none"/><circle cy="-24" r="3" fill="#1d4ed8"/>'
-       '<path d="M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z" fill="#1e40af"/>')
-
-
-def float_above(bottom, svg):
-    """A hat floating just above the head, like the halo: 85% size, its lowest point 10 above the head's top."""
-    return f'<g transform="translate(0 {-10 - bottom * 0.85:g}) scale(.85)">{svg}</g>'
-
-
-# [back, side (facing right), front]. Hats float above the head (they never press on IMD's drawing); headphones wrap
-# it, in each view.
+# Per extra: [back, side, front], each (behind, over).
 EXTRA_SVG = {
-    'Cap': [float_above(33, CAP)] * 3,
-    'Beanie': [float_above(30, BEANIE)] * 3,
-    'Headphones': [at(16, HP_FRONT),
-                   at(10, BAND.format(d='M-48 40C-56-16 4-24 14 30') + '<ellipse cx="-22" cy="44" rx="12" ry="17" fill="#e11d48"/>'),
-                   at(16, HP_FRONT)],
-    'Party Hat': [float_above(13, PARTY)] * 3,
-    'Halo': [at(4, HALO)] * 3,
-    'Crown': [float_above(14, CROWN)] * 3,
+    'Headphones': [('', at(16, HP_FRONT)),
+                   ('', at(10, BAND.format(d='M-48 40C-56-16 4-24 14 30') + '<ellipse cx="-22" cy="44" rx="12" ry="17" fill="#e11d48"/>')),
+                   ('', at(16, HP_FRONT))],
+    'Halo': [('', at(4, HALO))] * 3,
 }
+for _name in PACK_COLOR:
+    EXTRA_SVG[_name] = BACKPACK
+
 # Shades sit on the eyes (front frames only), drawn on a 96-wide pair of eyes.
 SHADES_SVG = ('<path d="M-50-12h42c3 0 4 2 4 5v8c0 10-6 15-16 15h-18c-10 0-16-5-16-15v-8c0-3 1-5 4-5Z" fill="#111"/>'
               '<path d="M50-12h-42c-3 0-4 2-4 5v8c0 10 6 15 16 15h18c10 0 16-5 16-15v-8c0-3-1-5-4-5Z" fill="#111"/>'
@@ -163,6 +163,11 @@ HAT = [(129, 67, 102, 0), (129, 67, 98, 0), (130, 60, 103, 0), (122, 79, 92, 0),
        (121, 71, 99, 0), (121, 89, 98, 0), (119, 79, 100, 0), (122, 66, 94, -6), (118, 79, 104, 0), (120, 24, 104, 0),
        (122, 68, 104, 0)]
 EYES = {13: (159, 118, 71), 14: (121, 110, 101), 15: (121, 79, 63), 16: (122, 110, 100)}
+# Where a backpack goes: the torso's centre (x, y; the middle of the shirt, measured) and scale (%, of a 128-wide torso).
+PACK = [(120, 191, 100), (120, 188, 100), (120, 183, 100), (119, 190, 100), (119, 190, 100), (123, 190, 100),
+        (121, 191, 100), (116, 186, 100), (119, 188, 100), (120, 188, 100), (119, 185, 100), (120, 190, 100),
+        (119, 190, 100), (118, 200, 100), (120, 193, 100), (121, 189, 100), (119, 193, 100), (120, 180, 100),
+        (121, 184, 100)]
 
 
 # ---------------------------------------------------------------- trait sets
@@ -195,8 +200,8 @@ def specs():
         s = dict(pose=pick(r, POSES), skin=pick(r, SKINS), shirt=pick(r, SHIRTS), shorts=pick(r, SHORTS), bg=pick(r, BGS), extra=pick(r, EXTRAS))
         if s['extra'] == SHADES and s['pose'] not in EYES:
             s['extra'] = 0  # shades only where the face shows
-        if s['skin'] == 6 and s['extra'] == 7:
-            continue  # gold with a crown is Genesis's
+        if s['skin'] == 6 and s['extra'] == 1:
+            continue  # gold with the Swarm Backpack is Genesis's
         k = tuple(s[k] for k in ('pose', 'skin', 'shirt', 'shorts', 'bg', 'extra'))
         if k in seen:
             continue
@@ -265,7 +270,7 @@ def frame_table(table):
         ex, ey, es = EYES.get(i, (0, 0, 0))
         b += bytes([c]) + off.to_bytes(2, 'big') + ln.to_bytes(2, 'big')
         b += bytes([f['x'], f['y'], f['w']]) + f['h'].to_bytes(2, 'big')
-        b += bytes([hx, hy, hs, hr + 128, ex, ey, es, views[VIEW[i]]])
+        b += bytes([hx, hy, hs, hr + 128, ex, ey, es, views[VIEW[i]]]) + bytes(PACK[i])
     return bytes(b)
 
 
@@ -323,7 +328,8 @@ contract ImdPepeSpecs {{
 
 def parts():
     """Every piece of text the pictures and traits use, in one blob (ImdPepeParts) with its index: names, tint
-    matrices, backgrounds, extras (3 views each), and the filter steps. Returns (blob, starts, first index of each group)."""
+    matrices, backgrounds, extras (3 views x 2 layers each) and their colours, and the filter steps. Returns (blob,
+    (start, end) of each piece, first index of each group)."""
     groups, items = {}, []
 
     def group(name, strs):
@@ -342,15 +348,18 @@ def parts():
     group('bgsvg', BG_SVG)
     ex = []
     for name, _ in EXTRAS:
-        ex += [SHADES_SVG] * 3 if name == 'Shades' else EXTRA_SVG.get(name, ['', '', ''])
+        for behind, over in [('', SHADES_SVG)] * 3 if name == 'Shades' else EXTRA_SVG.get(name, [('', '')] * 3):
+            ex += [behind, over]
     group('extrasvg', ex)
+    group('extracolor', [PACK_COLOR.get(name, '') for name, _ in EXTRAS])
     group('fx', [region_fx(r) for r in ('skin', 'shirt', 'shorts')] + [region_end(r) for r in ('skin', 'shirt', 'shorts')])
-    blob, starts = bytearray(), []
+    blob, spans, seen = bytearray(), [], {}
     for t in items:
-        starts.append(len(blob))
-        blob += t.encode()
-    starts.append(len(blob))
-    return bytes(blob), starts, groups
+        if t not in seen:  # a piece used more than once (the backpacks' drawings) is stored once
+            seen[t] = (len(blob), len(blob) + len(t.encode()))
+            blob += t.encode()
+        spans.append(seen[t])
+    return bytes(blob), spans, groups
 
 
 PARTS_TEMPLATE = """// SPDX-License-Identifier: MIT
@@ -384,10 +393,11 @@ ART_TEMPLATE = open(os.path.join(HERE, 'imd_art_template.sol')).read()
 
 def art_solidity(n_chunks, table, starts, groups):
     ft = frame_table(table)
-    idx = b''.join(x.to_bytes(2, 'big') for x in starts)
+    idx = b''.join(a.to_bytes(2, 'big') + b.to_bytes(2, 'big') for a, b in starts)
     subs = {
         '@SUPPLY@': str(SUPPLY), '@FRAMES@': str(len(FRAMES)), '@N@': str(n_chunks),
-        '@FRAME_TABLE@': hexlines(ft, 8), '@PART_INDEX@': hexlines(idx, 8), '@PARTS_SIZE@': str(starts[-1] + 1),
+        '@FRAME_TABLE@': hexlines(ft, 8), '@PART_INDEX@': hexlines(idx, 8), '@PARTS_SIZE@': str(max(b for _, b in starts) + 1),
+        '@BODY@': hex(sum(1 << i for i, (name, _) in enumerate(EXTRAS) if name in PACK_COLOR)),
         '@SHADES@': str(SHADES),
         '@DATA_ARGS@': ', '.join(f'address data{i}_' for i in range(n_chunks)),
         '@DATA_SETS@': '\n'.join(f'        data[{i}] = data{i}_;' for i in range(n_chunks)),
@@ -440,9 +450,8 @@ def main():
     out[os.path.join(ROOT, 'src', 'ImdPepeArt.sol')] = art_solidity(len(cs), table, starts, groups)
     out[os.path.join(ROOT, 'test', 'utils', 'ImdArt.sol')] = deploy_helper(len(cs))
     # what tools/imd/tune.html shows: the placements and designs, in its terms
-    names = {'Cap': 'cap', 'Beanie': 'beanie', 'Headphones': 'headphones', 'Party Hat': 'party', 'Halo': 'halo', 'Crown': 'crown'}
-    tune = {'line': LINE, 'hat': HAT, 'eyes': EYES,
-            'extras': {names[k]: dict(zip(['back', 'side', 'front'], v)) for k, v in EXTRA_SVG.items()} | {'shades': {'front': SHADES_SVG}}}
+    tune = {'line': LINE, 'hat': HAT, 'eyes': EYES, 'pack': PACK, 'color': PACK_COLOR,
+            'extras': {k: dict(zip(['back', 'side', 'front'], v)) for k, v in EXTRA_SVG.items()} | {'Shades': {'front': ['', SHADES_SVG]}}}
     out[os.path.join(ROOT, 'art', 'imd', 'extras.json')] = json.dumps(tune, indent=1) + '\n'
     names = lambda v: dict(pose=POSES[v & 31][0], skin=SKINS[v >> 5 & 7][0], shirt=SHIRTS[v >> 8 & 15][0], shorts=SHORTS[v >> 12 & 7][0],
                            background=BGS[v >> 15 & 15][0], extra=EXTRAS[v >> 19 & 15][0], one=([''] + [o[0] for o in ONE_OF_ONES])[v >> 23 & 7])

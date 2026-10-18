@@ -138,39 +138,199 @@
    100
   ]
  },
+ "pack": [
+  [
+   120,
+   191,
+   100
+  ],
+  [
+   120,
+   188,
+   100
+  ],
+  [
+   120,
+   183,
+   100
+  ],
+  [
+   119,
+   190,
+   100
+  ],
+  [
+   119,
+   190,
+   100
+  ],
+  [
+   123,
+   190,
+   100
+  ],
+  [
+   121,
+   191,
+   100
+  ],
+  [
+   116,
+   186,
+   100
+  ],
+  [
+   119,
+   188,
+   100
+  ],
+  [
+   120,
+   188,
+   100
+  ],
+  [
+   119,
+   185,
+   100
+  ],
+  [
+   120,
+   190,
+   100
+  ],
+  [
+   119,
+   190,
+   100
+  ],
+  [
+   118,
+   200,
+   100
+  ],
+  [
+   120,
+   193,
+   100
+  ],
+  [
+   121,
+   189,
+   100
+  ],
+  [
+   119,
+   193,
+   100
+  ],
+  [
+   120,
+   180,
+   100
+  ],
+  [
+   121,
+   184,
+   100
+  ]
+ ],
+ "color": {
+  "Swarm Backpack": "#5eea9c",
+  "Black Backpack": "#2e2e2e",
+  "Red Backpack": "#d94040",
+  "Gold Backpack": "#f2c230"
+ },
  "extras": {
-  "cap": {
-   "back": "<g transform=\"translate(0 -38.05) scale(.85)\"><path d=\"M-58 24C-60-6-30-24 0-24C30-24 60-6 58 24C30 18-30 18-58 24Z\" fill=\"#2563eb\"/><path d=\"M0-23C2-6 2 8 0 19\" fill=\"none\"/><circle cy=\"-24\" r=\"3\" fill=\"#1d4ed8\"/><path d=\"M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z\" fill=\"#1e40af\"/></g>",
-   "side": "<g transform=\"translate(0 -38.05) scale(.85)\"><path d=\"M-58 24C-60-6-30-24 0-24C30-24 60-6 58 24C30 18-30 18-58 24Z\" fill=\"#2563eb\"/><path d=\"M0-23C2-6 2 8 0 19\" fill=\"none\"/><circle cy=\"-24\" r=\"3\" fill=\"#1d4ed8\"/><path d=\"M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z\" fill=\"#1e40af\"/></g>",
-   "front": "<g transform=\"translate(0 -38.05) scale(.85)\"><path d=\"M-58 24C-60-6-30-24 0-24C30-24 60-6 58 24C30 18-30 18-58 24Z\" fill=\"#2563eb\"/><path d=\"M0-23C2-6 2 8 0 19\" fill=\"none\"/><circle cy=\"-24\" r=\"3\" fill=\"#1d4ed8\"/><path d=\"M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z\" fill=\"#1e40af\"/></g>"
+  "Headphones": {
+   "back": [
+    "",
+    "<g transform=\"translate(0 16)\"><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke-width=\"7\"/><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"3\"/><ellipse cx=\"-64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/><ellipse cx=\"64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/></g>"
+   ],
+   "side": [
+    "",
+    "<g transform=\"translate(0 10)\"><path d=\"M-48 40C-56-16 4-24 14 30\" fill=\"none\" stroke-width=\"7\"/><path d=\"M-48 40C-56-16 4-24 14 30\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"3\"/><ellipse cx=\"-22\" cy=\"44\" rx=\"12\" ry=\"17\" fill=\"#e11d48\"/></g>"
+   ],
+   "front": [
+    "",
+    "<g transform=\"translate(0 16)\"><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke-width=\"7\"/><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"3\"/><ellipse cx=\"-64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/><ellipse cx=\"64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/></g>"
+   ]
   },
-  "beanie": {
-   "back": "<g transform=\"translate(0 -35.5) scale(.85)\"><path d=\"M-60 26C-62-14-30-32 0-32C30-32 62-14 60 26Z\" fill=\"#ea580c\"/><path d=\"M-62 14C-30 8 30 8 62 14L62 30C30 24-30 24-62 30Z\" fill=\"#c2410c\"/><path d=\"M-40 12v14M-20 10v14M0 9v14M20 10v14M40 12v14\" stroke=\"#9a3412\" stroke-width=\"2\"/><circle cy=\"-35\" r=\"8\" fill=\"#fde68a\"/></g>",
-   "side": "<g transform=\"translate(0 -35.5) scale(.85)\"><path d=\"M-60 26C-62-14-30-32 0-32C30-32 62-14 60 26Z\" fill=\"#ea580c\"/><path d=\"M-62 14C-30 8 30 8 62 14L62 30C30 24-30 24-62 30Z\" fill=\"#c2410c\"/><path d=\"M-40 12v14M-20 10v14M0 9v14M20 10v14M40 12v14\" stroke=\"#9a3412\" stroke-width=\"2\"/><circle cy=\"-35\" r=\"8\" fill=\"#fde68a\"/></g>",
-   "front": "<g transform=\"translate(0 -35.5) scale(.85)\"><path d=\"M-60 26C-62-14-30-32 0-32C30-32 62-14 60 26Z\" fill=\"#ea580c\"/><path d=\"M-62 14C-30 8 30 8 62 14L62 30C30 24-30 24-62 30Z\" fill=\"#c2410c\"/><path d=\"M-40 12v14M-20 10v14M0 9v14M20 10v14M40 12v14\" stroke=\"#9a3412\" stroke-width=\"2\"/><circle cy=\"-35\" r=\"8\" fill=\"#fde68a\"/></g>"
+  "Halo": {
+   "back": [
+    "",
+    "<g transform=\"translate(0 4)\"><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke-width=\"7\"/><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke=\"#fde047\" stroke-width=\"3.5\"/></g>"
+   ],
+   "side": [
+    "",
+    "<g transform=\"translate(0 4)\"><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke-width=\"7\"/><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke=\"#fde047\" stroke-width=\"3.5\"/></g>"
+   ],
+   "front": [
+    "",
+    "<g transform=\"translate(0 4)\"><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke-width=\"7\"/><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke=\"#fde047\" stroke-width=\"3.5\"/></g>"
+   ]
   },
-  "headphones": {
-   "back": "<g transform=\"translate(0 16)\"><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke-width=\"7\"/><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"3\"/><ellipse cx=\"-64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/><ellipse cx=\"64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/></g>",
-   "side": "<g transform=\"translate(0 10)\"><path d=\"M-48 40C-56-16 4-24 14 30\" fill=\"none\" stroke-width=\"7\"/><path d=\"M-48 40C-56-16 4-24 14 30\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"3\"/><ellipse cx=\"-22\" cy=\"44\" rx=\"12\" ry=\"17\" fill=\"#e11d48\"/></g>",
-   "front": "<g transform=\"translate(0 16)\"><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke-width=\"7\"/><path d=\"M-64 42C-66-22 66-22 64 42\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"3\"/><ellipse cx=\"-64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/><ellipse cx=\"64\" cy=\"46\" rx=\"10\" ry=\"16\" fill=\"#e11d48\"/></g>"
+  "Swarm Backpack": {
+   "back": [
+    "",
+    "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
+   ],
+   "side": [
+    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ],
+   "front": [
+    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
+    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ]
   },
-  "party": {
-   "back": "<g transform=\"translate(0 -21.05) scale(.85)\"><path d=\"M-18 10L2-54L20 8C8 13-6 13-18 10Z\" fill=\"#a855f7\"/><g fill=\"#fde047\" stroke=\"none\"><circle cx=\"-2\" cy=\"-14\" r=\"3\"/><circle cx=\"8\" cy=\"-30\" r=\"3\"/><circle cx=\"6\" cy=\"0\" r=\"3\"/></g><circle cx=\"2\" cy=\"-56\" r=\"6\" fill=\"#fde047\"/></g>",
-   "side": "<g transform=\"translate(0 -21.05) scale(.85)\"><path d=\"M-18 10L2-54L20 8C8 13-6 13-18 10Z\" fill=\"#a855f7\"/><g fill=\"#fde047\" stroke=\"none\"><circle cx=\"-2\" cy=\"-14\" r=\"3\"/><circle cx=\"8\" cy=\"-30\" r=\"3\"/><circle cx=\"6\" cy=\"0\" r=\"3\"/></g><circle cx=\"2\" cy=\"-56\" r=\"6\" fill=\"#fde047\"/></g>",
-   "front": "<g transform=\"translate(0 -21.05) scale(.85)\"><path d=\"M-18 10L2-54L20 8C8 13-6 13-18 10Z\" fill=\"#a855f7\"/><g fill=\"#fde047\" stroke=\"none\"><circle cx=\"-2\" cy=\"-14\" r=\"3\"/><circle cx=\"8\" cy=\"-30\" r=\"3\"/><circle cx=\"6\" cy=\"0\" r=\"3\"/></g><circle cx=\"2\" cy=\"-56\" r=\"6\" fill=\"#fde047\"/></g>"
+  "Black Backpack": {
+   "back": [
+    "",
+    "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
+   ],
+   "side": [
+    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ],
+   "front": [
+    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
+    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ]
   },
-  "halo": {
-   "back": "<g transform=\"translate(0 4)\"><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke-width=\"7\"/><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke=\"#fde047\" stroke-width=\"3.5\"/></g>",
-   "side": "<g transform=\"translate(0 4)\"><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke-width=\"7\"/><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke=\"#fde047\" stroke-width=\"3.5\"/></g>",
-   "front": "<g transform=\"translate(0 4)\"><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke-width=\"7\"/><ellipse cy=\"-26\" rx=\"40\" ry=\"9\" fill=\"none\" stroke=\"#fde047\" stroke-width=\"3.5\"/></g>"
+  "Red Backpack": {
+   "back": [
+    "",
+    "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
+   ],
+   "side": [
+    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ],
+   "front": [
+    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
+    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ]
   },
-  "crown": {
-   "back": "<g transform=\"translate(0 -21.9) scale(.85)\"><path d=\"M-32 14L-36-18L-18-4L-2-26L14-4L32-18L30 14C10 10-12 10-32 14Z\" fill=\"#facc15\"/><circle cx=\"-1\" cy=\"4\" r=\"4\" fill=\"#ef4444\"/><g fill=\"#facc15\"><circle cx=\"-36\" cy=\"-19\" r=\"3\"/><circle cx=\"-2\" cy=\"-27\" r=\"3\"/><circle cx=\"32\" cy=\"-19\" r=\"3\"/></g></g>",
-   "side": "<g transform=\"translate(0 -21.9) scale(.85)\"><path d=\"M-32 14L-36-18L-18-4L-2-26L14-4L32-18L30 14C10 10-12 10-32 14Z\" fill=\"#facc15\"/><circle cx=\"-1\" cy=\"4\" r=\"4\" fill=\"#ef4444\"/><g fill=\"#facc15\"><circle cx=\"-36\" cy=\"-19\" r=\"3\"/><circle cx=\"-2\" cy=\"-27\" r=\"3\"/><circle cx=\"32\" cy=\"-19\" r=\"3\"/></g></g>",
-   "front": "<g transform=\"translate(0 -21.9) scale(.85)\"><path d=\"M-32 14L-36-18L-18-4L-2-26L14-4L32-18L30 14C10 10-12 10-32 14Z\" fill=\"#facc15\"/><circle cx=\"-1\" cy=\"4\" r=\"4\" fill=\"#ef4444\"/><g fill=\"#facc15\"><circle cx=\"-36\" cy=\"-19\" r=\"3\"/><circle cx=\"-2\" cy=\"-27\" r=\"3\"/><circle cx=\"32\" cy=\"-19\" r=\"3\"/></g></g>"
+  "Gold Backpack": {
+   "back": [
+    "",
+    "<rect x=\"-52\" y=\"-48\" width=\"104\" height=\"92\" rx=\"34\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"currentColor\"/><rect x=\"-34\" y=\"-10\" width=\"68\" height=\"46\" rx=\"16\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-26 2H26\" fill=\"none\"/><path d=\"M-12-48C-12-58 12-58 12-48\" fill=\"none\"/><path d=\"M-38-28C-38-36-32-40-24-40\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>"
+   ],
+   "side": [
+    "<rect x=\"-96\" y=\"-50\" width=\"72\" height=\"92\" rx=\"30\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"currentColor\"/><rect x=\"-106\" y=\"-6\" width=\"28\" height=\"42\" rx=\"11\" fill=\"#000\" fill-opacity=\".12\" stroke=\"none\"/><path d=\"M-82-32C-82-40-76-44-68-44\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".55\" stroke-width=\"3.5\"/>",
+    "<path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-40-36C-16-46 18-44 30-30C38-20 40-4 38 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ],
+   "front": [
+    "<rect x=\"-80\" y=\"-50\" width=\"160\" height=\"92\" rx=\"38\" fill=\"currentColor\"/>",
+    "<path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M-36-40C-40-20-40 0-36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke-width=\"10\"/><path d=\"M36-40C40-20 40 0 36 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"5.5\"/>"
+   ]
   },
-  "shades": {
-   "front": "<path d=\"M-50-12h42c3 0 4 2 4 5v8c0 10-6 15-16 15h-18c-10 0-16-5-16-15v-8c0-3 1-5 4-5Z\" fill=\"#111\"/><path d=\"M50-12h-42c-3 0-4 2-4 5v8c0 10 6 15 16 15h18c10 0 16-5 16-15v-8c0-3-1-5-4-5Z\" fill=\"#111\"/><path d=\"M-4-6h8\" fill=\"none\"/><path d=\"M-40-6h8M16-6h8\" stroke=\"#fff\" stroke-width=\"2.5\" opacity=\".75\"/>"
+  "Shades": {
+   "front": [
+    "",
+    "<path d=\"M-50-12h42c3 0 4 2 4 5v8c0 10-6 15-16 15h-18c-10 0-16-5-16-15v-8c0-3 1-5 4-5Z\" fill=\"#111\"/><path d=\"M50-12h-42c-3 0-4 2-4 5v8c0 10 6 15 16 15h18c10 0 16-5 16-15v-8c0-3-1-5-4-5Z\" fill=\"#111\"/><path d=\"M-4-6h8\" fill=\"none\"/><path d=\"M-40-6h8M16-6h8\" stroke=\"#fff\" stroke-width=\"2.5\" opacity=\".75\"/>"
+   ]
   }
  }
 }
