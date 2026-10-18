@@ -35,7 +35,7 @@ interface IArbSys {
 /// @title PepesFamily: the PEPES FAMILY collection
 /// @notice PEPES FAMILY (symbol PEPES): 3,333 Pepes drawn from IMD's own Pepe (imd.fun), stored and drawn entirely
 ///         on chain: ImdPepeArt writes each NFT's picture (IMD's art in one of 19 poses, recoloured, with a background
-///         and maybe a backpack) from one of the 3,333 trait sets in ImdPepeSpecs (no two alike; four of them 1/1s). Minted blind,
+///         and maybe an extra) from one of the 3,333 trait sets in ImdPepeSpecs (no two alike; four of them 1/1s). Minted blind,
 ///         then revealed: a keyed shuffle of the token ids, from a seed nobody can know before everyone can, decides
 ///         which token gets which trait set.
 ///

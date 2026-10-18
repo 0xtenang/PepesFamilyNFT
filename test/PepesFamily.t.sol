@@ -300,7 +300,7 @@ contract PepesFamilyTest is MiniTest {
         assertEq(seen[2], (1 << 9) - 1, "all shirts");
         assertEq(seen[3], (1 << 6) - 1, "all shorts");
         assertEq(seen[4], (1 << 10) - 1, "all backgrounds");
-        assertEq(seen[5], (1 << 8) - 1, "all extras");
+        assertEq(seen[5], (1 << 4) - 1, "all extras");
     }
 
     mapping(uint256 => bool) private _used;
@@ -322,7 +322,7 @@ contract PepesFamilyTest is MiniTest {
     /// Every extra renders with whole transforms (as many "(" as ")"; a missing one moves it off the Pepe).
     function test_EveryExtraRenders() public view {
         uint256 found;
-        for (uint256 i; i < 3333 && found != (1 << 8) - 1; ++i) {
+        for (uint256 i; i < 3333 && found != (1 << 4) - 1; ++i) {
             uint256 e = (art.specOf(i) >> 19) & 15;
             if (found & (1 << e) != 0) continue;
             found |= 1 << e;
@@ -335,6 +335,6 @@ contract PepesFamilyTest is MiniTest {
             }
             assertEq(open, close, "brackets");
         }
-        assertEq(found, (1 << 8) - 1, "all extras");
+        assertEq(found, (1 << 4) - 1, "all extras");
     }
 }

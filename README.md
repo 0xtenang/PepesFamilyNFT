@@ -10,7 +10,7 @@ draws every NFT's picture (an SVG) and writes its traits. No IPFS, no server: no
 
 Each Pepe is IMD's drawing in one of its 19 poses (front, side, from behind, walking, running, scratching its head,
 looking up, cheering), with its skin, shirt and shorts recoloured by SVG filters (colour-keyed masks that keep IMD's
-lines and shading), a background (the IMD panel wall, the terminal, the floor, or a colour) and maybe a backpack, headphones, a halo or shades.
+lines and shading), a background (the IMD panel wall, the terminal, the floor, or a colour) and maybe headphones, a halo or shades.
 
 The mint, commit-reveal, royalty enforcement and links are I'M DEGEN's
 ([AdamNakamoto/MineWorld](https://github.com/AdamNakamoto/MineWorld)).
@@ -19,7 +19,7 @@ The mint, commit-reveal, royalty enforcement and links are I'M DEGEN's
 |---|---|
 | Name / symbol | PEPES FAMILY / PEPES |
 | Supply | 3,333, no two alike (four 1/1s: Genesis, The Swarm, Golden Pepe, Night Shift) |
-| Traits | Pose (19), Skin (7), Shirt (9), Shorts (6), Background (10), Extra (8) |
+| Traits | Pose (19), Skin (7), Shirt (9), Shorts (6), Background (10), Extra (4) |
 | Price | 0.0004 ETH (about $1 at ETH $2,450); the owner can change it with `setPrice` |
 | Wallet limit | 3 per wallet (owner can set 1 to 50); wallets only, no contracts |
 | Owner | `0x3c8A4d94B3219F6633F2cC94094f4765b30c691C` (can never be renounced, so OpenSea Studio always works) |
@@ -34,7 +34,7 @@ The mint, commit-reveal, royalty enforcement and links are I'M DEGEN's
 | `src/PepesFamily.sol` | The NFT (ERC-721 + ERC-2981 + ERC721-C). Blind mint, then reveal: a keyed shuffle from a seed nobody can know early assigns each token one of the 3,333 trait sets |
 | `src/ImdPepeArt.sol` | Draws each picture (background, the recoloured pose, a shadow, the extra) and writes the traits (generated) |
 | `src/ImdPepeData0.sol` ... `ImdPepeData6.sol` | IMD's 19 frames as WebP (140 KB in all), as contract code (generated) |
-| `src/ImdPepeParts.sol` | The text the pictures are made of: trait names, colour matrices, backgrounds, backpacks and other extras (generated) |
+| `src/ImdPepeParts.sol` | The text the pictures are made of: trait names, colour matrices, backgrounds, extras (generated) |
 | `src/ImdPepeSpecs.sol` | The 3,333 trait sets, 4 bytes each (generated) |
 
 `art/imd/` holds IMD's sprite sheet and the 19 frames cut from it (with their measurements: crop, head, eyes).
