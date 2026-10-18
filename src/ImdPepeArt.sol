@@ -20,24 +20,26 @@ contract ImdPepeArt {
 
     uint256 public constant SUPPLY = 3333;
     uint256 public constant FRAMES = 19;
-    /// @dev Per frame, 17 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
-    ///      head x, head top, head width, eyes x, eyes y, eyes width (0: no face), facing (0 back, 1 side, 2 front).
+    /// @dev Per frame, 18 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
+    ///      where a hat goes (x, y, scale %, tilt + 128 degrees), the eyes (x, y, scale %; 0: no face), facing (0 back,
+    ///      1 side, 2 front).
     bytes private constant FRAME_TABLE =
-        hex"060000189836408c00d281437a0000000004360c1956383e8700d481437500000000050000194436388d00da823c7c00"
-        hex"00000006189816fe37488100cb7a4f6e0000000005327218b037478200ca7b507300000000031b8c1b6237469e00cc82"
-        hex"4a8e000000000400001b2837459400cd7f487d000000000145ec19da41418100d18144710000000102000020e2293eab"
-        hex"00d482427100000001041b281ae4433e7a00d48041690000000101000023b20244e200ce86476600000001051944192e"
-        hex"44427700d0804466000000010336ee1b4636438600cf794777000000010300001b8c38558d00bd7f59769f7644020220"
-        hex"e22078364c8500c6774f78796e610202415a1ba038418300d17b5271794f3c020123b2223a274c9400c6724f897a6e60"
-        hex"020025d625c2260da501067940700000000000000025d60436ec00dd7a467000000000";
+        hex"060000189836408c00d2814366800000000004360c1956383e8700d48143628000000000050000194436388d00da823c"
+        hex"67800000000006189816fe37488100cb7a4f5c800000000005327218b037478200ca7b50608000000000031b8c1b6237"
+        hex"469e00cc824a6880000000000400001b2837459400cd7f486880000000000145ec19da41418100d181445e8000000001"
+        hex"02000020e2293eab00d482425e8000000001041b281ae4433e7a00d4804158800000000101000023b20244e200ce8647"
+        hex"558000000001051944192e44427700d080445580000000010336ee1b4636438600cf79476380000000010300001b8c38"
+        hex"558d00bd795962809f7647020220e22078364c8500c6774f6480796e650202415a1ba038418300d17a425e7a794f3f02"
+        hex"0123b2223a274c9400c6764f68807a6e64020025d625c2260da50106781868800000000000000025d60436ec00dd7a44"
+        hex"688000000000";
     /// @dev Where each piece of text starts in ImdPepeParts (2 bytes each; the next start is its end).
     bytes private constant PART_INDEX =
         hex"0000000c001800260037003e005100590064006b0074007b00850096009e00a500af00bb00c300cc00d900df00e200eb"
         hex"00f100f600fa01020105010a010f011a01200126012a013001330137013c0141014401490151015901620167016b016e"
         hex"0177017c0187018b018f0192019801a201ab01b101b501ba01ba01c101ca01d501e001e00232028502d8032c037e03d2"
         hex"03d20424047804c60519056d05c106150667066706bb070e076207b6080a130c1f0027dd280c283b286a289928c828f7"
-        hex"292629262926292629e72ad52bb62d052e542fa330f631d533283432353c364637bc39323aa83b4a3bec3c8e3d6d3e4c"
-        hex"3f2b403541404318435d43a543f0";
+        hex"292629262926292629fd2ae62bf82d302e272f5f308c317e32ab33b934c735d537073839396b3a1e3ad13b843ca43dc4"
+        hex"3ee43fee40f942d14316435e43a9";
     uint256 private constant POSE = 0;
     uint256 private constant SKIN = 19;
     uint256 private constant SHIRT = 26;
@@ -60,7 +62,7 @@ contract ImdPepeArt {
     error BadIndex();
 
     constructor(IImdPepeSpecs specs_, address parts_, address data0_, address data1_, address data2_, address data3_, address data4_, address data5_, address data6_) {
-        if (address(specs_).code.length == 0 || parts_.code.length != 17393 || data0_.code.length == 0 || data1_.code.length == 0 || data2_.code.length == 0 || data3_.code.length == 0 || data4_.code.length == 0 || data5_.code.length == 0 || data6_.code.length == 0) revert BadIndex();
+        if (address(specs_).code.length == 0 || parts_.code.length != 17322 || data0_.code.length == 0 || data1_.code.length == 0 || data2_.code.length == 0 || data3_.code.length == 0 || data4_.code.length == 0 || data5_.code.length == 0 || data6_.code.length == 0) revert BadIndex();
         specs = specs_;
         parts = parts_;
         data[0] = data0_;
@@ -80,12 +82,13 @@ contract ImdPepeArt {
         uint256 y;
         uint256 w;
         uint256 h;
-        uint256 headX;
-        uint256 headTop;
-        uint256 headW;
+        uint256 hatX;
+        uint256 hatY;
+        uint256 hatS;
+        uint256 hatR;
         uint256 eyesX;
         uint256 eyesY;
-        uint256 eyesW;
+        uint256 eyesS;
         uint256 facing;
     }
 
@@ -118,7 +121,7 @@ contract ImdPepeArt {
         bytes memory t = FRAME_TABLE;
         uint256 w;
         assembly ("memory-safe") {
-            w := mload(add(add(t, 32), mul(i, 17)))
+            w := mload(add(add(t, 32), mul(i, 18)))
         }
         f.chunk = w >> 248;
         f.offset = (w >> 232) & 0xffff;
@@ -127,13 +130,14 @@ contract ImdPepeArt {
         f.y = (w >> 200) & 255;
         f.w = (w >> 192) & 255;
         f.h = (w >> 176) & 0xffff;
-        f.headX = (w >> 168) & 255;
-        f.headTop = (w >> 160) & 255;
-        f.headW = (w >> 152) & 255;
-        f.eyesX = (w >> 144) & 255;
-        f.eyesY = (w >> 136) & 255;
-        f.eyesW = (w >> 128) & 255;
-        f.facing = (w >> 120) & 255;
+        f.hatX = (w >> 168) & 255;
+        f.hatY = (w >> 160) & 255;
+        f.hatS = (w >> 152) & 255;
+        f.hatR = (w >> 144) & 255;
+        f.eyesX = (w >> 136) & 255;
+        f.eyesY = (w >> 128) & 255;
+        f.eyesS = (w >> 120) & 255;
+        f.facing = (w >> 112) & 255;
     }
 
     /// @dev Frame `f`'s WebP bytes, from its data contract's code.
@@ -147,10 +151,10 @@ contract ImdPepeArt {
         }
     }
 
-    /// @dev `n / 1000` with three decimals.
+    /// @dev `n / 100` with two decimals.
     function _dec(uint256 n) private pure returns (string memory) {
-        uint256 r = n % 1000;
-        return string.concat((n / 1000).toString(), ".", r < 10 ? "00" : r < 100 ? "0" : "", r.toString());
+        uint256 r = n % 100;
+        return string.concat((n / 100).toString(), ".", r < 10 ? "0" : "", r.toString());
     }
 
     // ---------------------------------------------------------------- the picture
@@ -178,20 +182,25 @@ contract ImdPepeArt {
     /// @dev The Pepe in frame `f` with its shadow, as an <image> (with the filter when there is one).
     function _pepe(Frame memory f, bool filtered) private view returns (string memory) {
         return string.concat(
-            '<ellipse cx="', f.headX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>',
+            '<ellipse cx="', f.hatX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>',
             '<image x="', f.x.toString(), '" y="', f.y.toString(), '" width="', f.w.toString(), '" height="', f.h.toString(),
             '" href="data:image/webp;base64,', FastBase64.encode(_frameBytes(f)), filtered ? '" filter="url(#c)"/>' : '"/>'
         );
     }
 
-    /// @dev Extra `e` placed on the head (a hat, on its top; shades, on the eyes), scaled to it.
+    /// @dev Extra `e` placed on the head (a hat, on its top; shades, on the eyes), as tuned for the frame, in IMD's
+    ///      line style.
     function _extra(uint256 e, Frame memory f) private view returns (string memory) {
         if (e == 0) return "";
         bool shades = e == SHADES;
-        if (shades && f.eyesW == 0) return "";
+        if (shades && f.eyesS == 0) return "";
+        string memory tilt = shades || f.hatR == 128
+            ? ""
+            : string.concat(" rotate(", f.hatR < 128 ? string.concat("-", (128 - f.hatR).toString()) : (f.hatR - 128).toString(), ")");
         return string.concat(
-            '<g transform="translate(', (shades ? f.eyesX : f.headX).toString(), " ", (shades ? f.eyesY : f.headTop).toString(),
-            ") scale(", _dec(shades ? f.eyesW * 1000 / 96 : f.headW * 1000 / 120), ')">',
+            '<g transform="translate(', (shades ? f.eyesX : f.hatX).toString(), " ", (shades ? f.eyesY : f.hatY).toString(), ")",
+            tilt, " scale(", _dec(shades ? f.eyesS : f.hatS),
+            ')" stroke="#1c1c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">',
             _part(EXTRA_SVG + e * 3 + f.facing), "</g>"
         );
     }

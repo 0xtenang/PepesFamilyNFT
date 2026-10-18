@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>extras tuning</title>
+<style>
+body { margin: 0; background: #2a2a2a; color: #ddd; font: 11px monospace; }
+table { border-collapse: collapse; }
+td { padding: 2px; vertical-align: top; }
+svg { background: #e9e9e6; display: block; }
+th { font-weight: 400; text-align: left; padding: 2px 4px; }
+</style>
+<table id="t"></table>
+<script>
+// Tuning page for the extras: every frame of IMD's Pepe with every extra, as tools/gen_imd_art.py places them
+// (art/imd/extras.json, which it writes). Edit HAT, EYES or the designs in the generator, run it, reload this page.
+// Serve the repo root (python3 -m http.server) and open /tools/imd/tune.html.
+const VIEWS = ["back", "back", "back", "back", "back", "back", "back", "side", "side", "side", "side", "side", "side", "front", "front", "front", "front", "back", "back"];
+const NAMES = ["cap", "beanie", "headphones", "party", "halo", "crown", "shades"];
+(async () => {
+  const frames = await (await fetch("../../art/imd/frames.json")).json();
+  const T = await (await fetch("../../art/imd/extras.json")).json();
+  let html = "<tr><th></th>" + NAMES.map((n) => `<th>${n}</th>`).join("") + "</tr>";
+  for (let i = 0; i < frames.length; i++) {
+    const f = frames[i], v = VIEWS[i], [hx, hy, hs, hr] = T.hat[i], e = T.eyes[i];
+    html += `<tr><th>${i}<br>${v}</th>`;
+    for (const n of NAMES) {
+      const d = (T.extras[n] || {})[v];
+      let g = "";
+      if (n === "shades") { if (e && d) g = `<g transform="translate(${e[0]} ${e[1]}) scale(${e[2] / 100})" ${T.line}>${d}</g>`; }
+      else if (d) g = `<g transform="translate(${hx} ${hy}) rotate(${hr}) scale(${hs / 100})" ${T.line}>${d}</g>`;
+      html += `<td><svg width="108" height="108" viewBox="30 0 180 180"><image href="../../art/imd/frame${String(i).padStart(2, "0")}.webp" x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}"/>${g}</svg></td>`;
+    }
+    html += "</tr>";
+  }
+  document.getElementById("t").innerHTML = html;
+})();
+</script>

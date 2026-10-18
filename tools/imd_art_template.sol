@@ -20,8 +20,9 @@ contract ImdPepeArt {
 
     uint256 public constant SUPPLY = @SUPPLY@;
     uint256 public constant FRAMES = @FRAMES@;
-    /// @dev Per frame, 17 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
-    ///      head x, head top, head width, eyes x, eyes y, eyes width (0: no face), facing (0 back, 1 side, 2 front).
+    /// @dev Per frame, 18 bytes: data contract, offset (2), length (2), x, y, w, h (2) (crop in the 240 x 284 frame),
+    ///      where a hat goes (x, y, scale %, tilt + 128 degrees), the eyes (x, y, scale %; 0: no face), facing (0 back,
+    ///      1 side, 2 front).
     bytes private constant FRAME_TABLE =
 @FRAME_TABLE@;
     /// @dev Where each piece of text starts in ImdPepeParts (2 bytes each; the next start is its end).
@@ -63,12 +64,13 @@ contract ImdPepeArt {
         uint256 y;
         uint256 w;
         uint256 h;
-        uint256 headX;
-        uint256 headTop;
-        uint256 headW;
+        uint256 hatX;
+        uint256 hatY;
+        uint256 hatS;
+        uint256 hatR;
         uint256 eyesX;
         uint256 eyesY;
-        uint256 eyesW;
+        uint256 eyesS;
         uint256 facing;
     }
 
@@ -101,7 +103,7 @@ contract ImdPepeArt {
         bytes memory t = FRAME_TABLE;
         uint256 w;
         assembly ("memory-safe") {
-            w := mload(add(add(t, 32), mul(i, 17)))
+            w := mload(add(add(t, 32), mul(i, 18)))
         }
         f.chunk = w >> 248;
         f.offset = (w >> 232) & 0xffff;
@@ -110,13 +112,14 @@ contract ImdPepeArt {
         f.y = (w >> 200) & 255;
         f.w = (w >> 192) & 255;
         f.h = (w >> 176) & 0xffff;
-        f.headX = (w >> 168) & 255;
-        f.headTop = (w >> 160) & 255;
-        f.headW = (w >> 152) & 255;
-        f.eyesX = (w >> 144) & 255;
-        f.eyesY = (w >> 136) & 255;
-        f.eyesW = (w >> 128) & 255;
-        f.facing = (w >> 120) & 255;
+        f.hatX = (w >> 168) & 255;
+        f.hatY = (w >> 160) & 255;
+        f.hatS = (w >> 152) & 255;
+        f.hatR = (w >> 144) & 255;
+        f.eyesX = (w >> 136) & 255;
+        f.eyesY = (w >> 128) & 255;
+        f.eyesS = (w >> 120) & 255;
+        f.facing = (w >> 112) & 255;
     }
 
     /// @dev Frame `f`'s WebP bytes, from its data contract's code.
@@ -130,10 +133,10 @@ contract ImdPepeArt {
         }
     }
 
-    /// @dev `n / 1000` with three decimals.
+    /// @dev `n / 100` with two decimals.
     function _dec(uint256 n) private pure returns (string memory) {
-        uint256 r = n % 1000;
-        return string.concat((n / 1000).toString(), ".", r < 10 ? "00" : r < 100 ? "0" : "", r.toString());
+        uint256 r = n % 100;
+        return string.concat((n / 100).toString(), ".", r < 10 ? "0" : "", r.toString());
     }
 
     // ---------------------------------------------------------------- the picture
@@ -161,20 +164,25 @@ contract ImdPepeArt {
     /// @dev The Pepe in frame `f` with its shadow, as an <image> (with the filter when there is one).
     function _pepe(Frame memory f, bool filtered) private view returns (string memory) {
         return string.concat(
-            '<ellipse cx="', f.headX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>',
+            '<ellipse cx="', f.hatX.toString(), '" cy="274" rx="58" ry="6" fill="#000" opacity=".18"/>',
             '<image x="', f.x.toString(), '" y="', f.y.toString(), '" width="', f.w.toString(), '" height="', f.h.toString(),
             '" href="data:image/webp;base64,', FastBase64.encode(_frameBytes(f)), filtered ? '" filter="url(#c)"/>' : '"/>'
         );
     }
 
-    /// @dev Extra `e` placed on the head (a hat, on its top; shades, on the eyes), scaled to it.
+    /// @dev Extra `e` placed on the head (a hat, on its top; shades, on the eyes), as tuned for the frame, in IMD's
+    ///      line style.
     function _extra(uint256 e, Frame memory f) private view returns (string memory) {
         if (e == 0) return "";
         bool shades = e == SHADES;
-        if (shades && f.eyesW == 0) return "";
+        if (shades && f.eyesS == 0) return "";
+        string memory tilt = shades || f.hatR == 128
+            ? ""
+            : string.concat(" rotate(", f.hatR < 128 ? string.concat("-", (128 - f.hatR).toString()) : (f.hatR - 128).toString(), ")");
         return string.concat(
-            '<g transform="translate(', (shades ? f.eyesX : f.headX).toString(), " ", (shades ? f.eyesY : f.headTop).toString(),
-            ") scale(", _dec(shades ? f.eyesW * 1000 / 96 : f.headW * 1000 / 120), ')">',
+            '<g transform="translate(', (shades ? f.eyesX : f.hatX).toString(), " ", (shades ? f.eyesY : f.hatY).toString(), ")",
+            tilt, " scale(", _dec(shades ? f.eyesS : f.hatS),
+            ')" stroke="#1c1c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">',
             _part(EXTRA_SVG + e * 3 + f.facing), "</g>"
         );
     }

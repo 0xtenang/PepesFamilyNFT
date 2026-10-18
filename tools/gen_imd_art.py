@@ -22,12 +22,6 @@ FRAMES = json.load(open(os.path.join(ART, 'frames.json')))
 FRAME_BYTES = [open(os.path.join(ART, f'frame{i:02d}.webp'), 'rb').read() for i in range(len(FRAMES))]
 # Which way each frame shows the Pepe: back, side (facing right) or front.
 VIEW = ['back'] * 7 + ['side'] * 6 + ['front'] * 4 + ['back', 'back']
-# Raised arms read as head in the cheering frames: their heads, measured by eye.
-FRAMES[17]['head'] = {'x': 121, 'top': 64, 'w': 112}
-FRAMES[18]['head'] = {'x': 122, 'top': 70, 'w': 112}
-for i, f in enumerate(FRAMES):
-    if VIEW[i] != 'front':
-        f['eyes'] = None
 
 # ---------------------------------------------------------------- traits: (name, value, weight)
 
@@ -111,24 +105,60 @@ BG_SVG = [WALL + FLOOR, TERMINAL + FLOOR,
           '<rect width="600" height="600" fill="#14161a"/>', '<rect width="600" height="600" fill="#3ddc84"/>',
           '<rect width="600" height="600" fill="#f5d77a"/>']
 
-# ---------------------------------------------------------------- extras, drawn around the head top (or the eyes) on
-# a 120-wide head; the contract moves and scales them to each frame's head. [back, side (facing right), front].
-O = 'stroke="#151515" stroke-width="4" stroke-linejoin="round"'
-DOME = f'<path d="M-50 16C-50-22 50-22 50 16Z" fill="#1d4ed8" {O}/>'
+# ---------------------------------------------------------------- extras
+# Drawn in IMD's style (thin, round, dark lines; flat colours) around the top of the head (shades: around the eyes),
+# for a 120-wide head, in three views. The contract wraps each in the shared line style (LINE) and places it with the
+# frame's placement below. Tuned by eye on every frame with tools/imd/tune.html.
+LINE = 'stroke="#1c1c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"'
+NS = 'stroke="none"'
+
+
+def at(dy, svg):
+    return f'<g transform="translate(0 {dy})">{svg}</g>'
+
+
+CAP_DOME = '<path d="M-58 24C-60-6-30-24 0-24C30-24 60-6 58 24C30 18-30 18-58 24Z" fill="#2563eb"/>'
+BEANIE = ('<path d="M-60 26C-62-14-30-32 0-32C30-32 62-14 60 26Z" fill="#ea580c"/>'
+          '<path d="M-62 14C-30 8 30 8 62 14L62 30C30 24-30 24-62 30Z" fill="#c2410c"/>'
+          '<path d="M-40 12v14M-20 10v14M0 9v14M20 10v14M40 12v14" stroke="#9a3412" stroke-width="2"/><circle cy="-35" r="8" fill="#fde68a"/>')
+BAND = ('<path d="{d}" fill="none" stroke-width="7"/><path d="{d}" fill="none" stroke="#4b5563" stroke-width="3"/>')
+PARTY = ('<path d="M-18 10L2-54L20 8C8 13-6 13-18 10Z" fill="#a855f7"/><g fill="#fde047" ' + NS + '><circle cx="-2" cy="-14" r="3"/>'
+         '<circle cx="8" cy="-30" r="3"/><circle cx="6" cy="0" r="3"/></g><circle cx="2" cy="-56" r="6" fill="#fde047"/>')
+HALO = '<ellipse cy="-26" rx="40" ry="9" fill="none" stroke-width="7"/><ellipse cy="-26" rx="40" ry="9" fill="none" stroke="#fde047" stroke-width="3.5"/>'
+CROWN = ('<path d="M-32 14L-36-18L-18-4L-2-26L14-4L32-18L30 14C10 10-12 10-32 14Z" fill="#facc15"/><circle cx="-1" cy="4" r="4" fill="#ef4444"/>'
+         '<g fill="#facc15"><circle cx="-36" cy="-19" r="3"/><circle cx="-2" cy="-27" r="3"/><circle cx="32" cy="-19" r="3"/></g>')
+HP_FRONT = (BAND.format(d='M-64 42C-66-22 66-22 64 42') +
+            '<ellipse cx="-64" cy="46" rx="10" ry="16" fill="#e11d48"/><ellipse cx="64" cy="46" rx="10" ry="16" fill="#e11d48"/>')
+# [back, side (facing right), front]
 EXTRA_SVG = {
-    'Cap': [DOME + f'<path d="M-50 12h100" {O}/>', DOME + f'<path d="M30 10C48 4 74 6 80 14C66 20 40 20 30 18Z" fill="#1d4ed8" {O}/>',
-            DOME + f'<ellipse cx="0" cy="16" rx="46" ry="8" fill="#1d4ed8" {O}/>'],
-    'Beanie': [f'<path d="M-56 20C-56-30 56-30 56 20Z" fill="#d97706" {O}/><rect x="-58" y="10" width="116" height="16" rx="5" fill="#b45309" {O}/><circle cy="-28" r="9" fill="#fde68a" {O}/>'] * 3,
-    'Headphones': [f'<path d="M-62 46C-64-14 64-14 62 46" fill="none" {O.replace("4", "8", 1)}/><ellipse cx="-62" cy="50" rx="11" ry="18" fill="#e11d48" {O}/><ellipse cx="62" cy="50" rx="11" ry="18" fill="#e11d48" {O}/>',
-                   f'<path d="M-48 46C-50-14 50-14 48 46" fill="none" {O.replace("4", "8", 1)}/><ellipse cx="-6" cy="50" rx="14" ry="20" fill="#e11d48" {O}/>',
-                   f'<path d="M-62 46C-64-14 64-14 62 46" fill="none" {O.replace("4", "8", 1)}/><ellipse cx="-62" cy="50" rx="11" ry="18" fill="#e11d48" {O}/><ellipse cx="62" cy="50" rx="11" ry="18" fill="#e11d48" {O}/>'],
-    'Party Hat': [f'<path d="M-22 10L0-58L22 10Z" fill="#8b5cf6" {O}/><path d="M-12-18h24M-7-36h14" stroke="#fde047" stroke-width="5"/><circle cy="-60" r="7" fill="#fde047" {O}/>'] * 3,
-    'Halo': ['<ellipse cy="-20" rx="44" ry="10" fill="none" stroke="#fde047" stroke-width="7"/><ellipse cy="-20" rx="44" ry="10" fill="none" stroke="#fff7c2" stroke-width="2"/>'] * 3,
-    'Crown': [f'<path d="M-38 12L-34-24L-17-6L0-32L17-6L34-24L38 12Z" fill="#f5c542" {O}/><circle cy="2" r="5" fill="#dc2626" {O.replace("4", "2", 1)}/>'] * 3,
+    'Cap': [at(20, CAP_DOME + '<path d="M0-23C2-6 2 8 0 12" fill="none"/><path d="M-14 22C-8 13 8 13 14 22" fill="#e9e9e6"/>'),
+            at(16, '<path d="M-58 32C-64 4-40-12-8-12C14-12 32-4 38 8C10 12-30 20-58 32Z" fill="#2563eb"/>'
+                   '<path d="M-10-11C-6 2-4 12-6 20" fill="none"/><path d="M32 6C48 0 70 0 78 6C66 12 48 13 30 12Z" fill="#1e40af"/>'),
+            at(2, CAP_DOME + '<path d="M0-23C2-6 2 8 0 19" fill="none"/><circle cy="-24" r="3" fill="#1d4ed8"/>'
+                  '<path d="M-46 21C-30 33 30 33 46 21C28 26-28 26-46 21Z" fill="#1e40af"/>')],
+    'Beanie': [at(22, BEANIE),
+               at(16, '<path d="M-62 36C-68 0-44-22-10-22C16-22 34-10 40 6C10 12-30 22-62 36Z" fill="#ea580c"/>'
+                      '<path d="M-64 26C-30 12 10 2 40-2L44 12C14 16-28 26-62 40Z" fill="#c2410c"/><circle cx="-14" cy="-24" r="8" fill="#fde68a"/>'),
+               at(10, BEANIE)],
+    'Headphones': [at(16, HP_FRONT),
+                   at(10, BAND.format(d='M-48 40C-56-16 4-24 14 30') + '<ellipse cx="-22" cy="44" rx="12" ry="17" fill="#e11d48"/>'),
+                   at(16, HP_FRONT)],
+    'Party Hat': [at(-2, PARTY)] * 3,
+    'Halo': [at(4, HALO)] * 3,
+    'Crown': [at(-4, CROWN)] * 3,
 }
 # Shades sit on the eyes (front frames only), drawn on a 96-wide pair of eyes.
-SHADES_SVG = (f'<rect x="-50" y="-15" width="46" height="28" rx="9" fill="#111" {O}/><rect x="4" y="-15" width="46" height="28" rx="9" fill="#111" {O}/>'
-              '<path d="M-4-4h8" stroke="#151515" stroke-width="5"/><path d="M-42-8l10-0M12-8l10 0" stroke="#fff" stroke-width="3" opacity=".7"/>')
+SHADES_SVG = ('<path d="M-50-12h42c3 0 4 2 4 5v8c0 10-6 15-16 15h-18c-10 0-16-5-16-15v-8c0-3 1-5 4-5Z" fill="#111"/>'
+              '<path d="M50-12h-42c-3 0-4 2-4 5v8c0 10 6 15 16 15h18c10 0 16-5 16-15v-8c0-3-1-5-4-5Z" fill="#111"/>'
+              '<path d="M-4-6h8" fill="none"/><path d="M-40-6h8M16-6h8" stroke="#fff" stroke-width="2.5" opacity=".75"/>')
+
+# Where the extras go on each frame: head top centre (x, y) in the 240 x 284 frame, scale (%, of a 120-wide head) and
+# tilt (degrees); and the eyes (x, y, scale % of a 96-wide pair) on the front frames. Tuned by eye.
+HAT = [(129, 67, 102, 0), (129, 67, 98, 0), (130, 60, 103, 0), (122, 79, 92, 0), (123, 80, 96, 0), (130, 74, 104, 0),
+       (127, 72, 104, 0), (129, 68, 94, 0), (130, 66, 94, 0), (128, 65, 88, 0), (134, 71, 85, 0), (128, 68, 85, 0),
+       (121, 71, 99, 0), (121, 89, 98, 0), (119, 79, 100, 0), (122, 66, 94, -6), (118, 79, 104, 0), (120, 24, 104, 0),
+       (122, 68, 104, 0)]
+EYES = {13: (159, 118, 71), 14: (121, 110, 101), 15: (121, 79, 63), 16: (122, 110, 100)}
 
 
 # ---------------------------------------------------------------- trait sets
@@ -159,7 +189,7 @@ def specs():
         seen.add(tuple(s[k] for k in ('pose', 'skin', 'shirt', 'shorts', 'bg', 'extra')))
     while len(out) < SUPPLY:
         s = dict(pose=pick(r, POSES), skin=pick(r, SKINS), shirt=pick(r, SHIRTS), shorts=pick(r, SHORTS), bg=pick(r, BGS), extra=pick(r, EXTRAS))
-        if s['extra'] == SHADES and VIEW[s['pose']] != 'front':
+        if s['extra'] == SHADES and s['pose'] not in EYES:
             s['extra'] = 0  # shades only where the face shows
         if s['skin'] == 6 and s['extra'] == 7:
             continue  # gold with a crown is Genesis's
@@ -227,10 +257,11 @@ def frame_table(table):
     views = {'back': 0, 'side': 1, 'front': 2}
     for i, f in enumerate(FRAMES):
         c, off, ln = table[i]
-        e = f['eyes'] or {'x': 0, 'y': 0, 'w': 0}
+        hx, hy, hs, hr = HAT[i]
+        ex, ey, es = EYES.get(i, (0, 0, 0))
         b += bytes([c]) + off.to_bytes(2, 'big') + ln.to_bytes(2, 'big')
         b += bytes([f['x'], f['y'], f['w']]) + f['h'].to_bytes(2, 'big')
-        b += bytes([f['head']['x'], f['head']['top'], f['head']['w'], e['x'], e['y'], e['w'], views[VIEW[i]]])
+        b += bytes([hx, hy, hs, hr + 128, ex, ey, es, views[VIEW[i]]])
     return bytes(b)
 
 
@@ -404,6 +435,11 @@ def main():
     out[os.path.join(ROOT, 'src', 'ImdPepeParts.sol')] = parts_solidity(blob)
     out[os.path.join(ROOT, 'src', 'ImdPepeArt.sol')] = art_solidity(len(cs), table, starts, groups)
     out[os.path.join(ROOT, 'test', 'utils', 'ImdArt.sol')] = deploy_helper(len(cs))
+    # what tools/imd/tune.html shows: the placements and designs, in its terms
+    names = {'Cap': 'cap', 'Beanie': 'beanie', 'Headphones': 'headphones', 'Party Hat': 'party', 'Halo': 'halo', 'Crown': 'crown'}
+    tune = {'line': LINE, 'hat': HAT, 'eyes': EYES,
+            'extras': {names[k]: dict(zip(['back', 'side', 'front'], v)) for k, v in EXTRA_SVG.items()} | {'shades': {'front': SHADES_SVG}}}
+    out[os.path.join(ROOT, 'art', 'imd', 'extras.json')] = json.dumps(tune, indent=1) + '\n'
     names = lambda v: dict(pose=POSES[v & 31][0], skin=SKINS[v >> 5 & 7][0], shirt=SHIRTS[v >> 8 & 15][0], shorts=SHORTS[v >> 12 & 7][0],
                            background=BGS[v >> 15 & 15][0], extra=EXTRAS[v >> 19 & 15][0], one=([''] + [o[0] for o in ONE_OF_ONES])[v >> 23 & 7])
     expected = json.dumps({'chunks': len(cs), 'specs': sp, 'traits': [names(v) for v in sp]}, indent=0)
